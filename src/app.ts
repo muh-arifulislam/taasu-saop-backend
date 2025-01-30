@@ -7,7 +7,6 @@ import express, { Application, Request, Response } from 'express';
 import router from './app/routes';
 import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import notFound from './app/middlewares/notFound';
-import { Book } from './app/modules/book/book.model';
 
 const app: Application = express();
 
@@ -16,24 +15,15 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: ['http://localhost:5173', 'https://web-booktracker.netlify.app'],
+    origin: ['http://localhost:5173', 'https://taasu-soap.web.app'],
     credentials: true,
   }),
 );
 
 app.get('/api/v1/test', async (req: Request, res: Response) => {
-  const result = await Book.updateMany(
-    {
-      createdBy: 'ummeysalma60@gmail.com',
-    },
-    {
-      createdBy: 'shahadathossain201999@gmail.com',
-    },
-  );
-
   res.status(200).json({
     message: 'test',
-    data: result,
+    data: null,
   });
 });
 

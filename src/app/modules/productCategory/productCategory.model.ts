@@ -3,7 +3,7 @@ import { IProductCategory } from './productCategory.interface';
 
 const productCategorySchema = new Schema<IProductCategory>(
   {
-    name: { type: String, required: true },
+    name: { type: String, required: true, unique: true },
     description: { type: String },
     deletedAt: { type: Date },
   },

@@ -14,4 +14,26 @@ const addUser = catchAsync(async (req, res) => {
   });
 });
 
-export const UserControllers = { addUser };
+const getUser = catchAsync(async (req, res) => {
+  const data = await UserServices.getUserFromDB(req.userEmail);
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'User data retrieved successfully',
+    data: data,
+  });
+});
+
+const updateUser = catchAsync(async (req, res) => {
+  const { id } = req.params;
+
+  const result = await UserServices.updateUserIntoDB(id, req.body);
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'User data updated successfully',
+    data: result,
+  });
+});
+
+export const UserControllers = { addUser, getUser, updateUser };

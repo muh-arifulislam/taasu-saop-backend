@@ -5,11 +5,16 @@ import { USER_ROLE } from './user.constant';
 
 const router = express.Router();
 
-router.post(
-  '/register',
+router.get(
+  '/me',
+  validateAuth(USER_ROLE.admin, USER_ROLE.customer, USER_ROLE.superAdmin),
+  UserControllers.getUser,
+);
 
-  validateAuth(USER_ROLE.superAdmin),
-  UserControllers.addUser,
+router.put(
+  '/:id',
+  validateAuth(USER_ROLE.customer, USER_ROLE.admin, USER_ROLE.superAdmin),
+  UserControllers.updateUser,
 );
 
 export const UserRoutes = router;

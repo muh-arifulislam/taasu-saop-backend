@@ -1,15 +1,28 @@
-/* eslint-disable no-unused-vars */
-import { Model } from 'mongoose';
-import { USER_ROLE } from './user.constant';
+import { Document, Types } from 'mongoose';
 
-export type TUserRole = keyof typeof USER_ROLE;
+export type TUserRole = 'admin' | 'customer' | 'superAdmin';
 
-export interface IUser {
+export type TAccountType = 'email' | 'google';
+
+export interface IUser extends Document {
+  firstName?: string;
+  lastName?: string;
   email: string;
+  password?: string;
   role: TUserRole;
+  accountType: TAccountType;
+  googleId?: string;
+  mobile: string;
+  gender: 'male' | 'female' | 'third';
+  address: Types.ObjectId;
 }
 
-export interface UserModel extends Model<IUser> {
-  //instance methods for checking if the user exist
-  isUserExistsByEmail(email: string): Promise<IUser>;
+// User Address Interface
+export interface IUserAddress {
+  addressLine1: string;
+  addressLine2?: string;
+  city: string;
+  postalCode: string;
 }
+
+export interface IUserPayload extends IUser, IUserAddress {}
