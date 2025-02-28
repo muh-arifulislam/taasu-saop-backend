@@ -38,8 +38,24 @@ const getManyAddresses = catchAsync(async (req, res) => {
   });
 });
 
+const updateAddress = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await ShippingAddressServices.updateOneAddressIntoDB(
+    id,
+    req.body,
+  );
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Shipping address updated successful.',
+    data: result,
+  });
+});
+
 export const ShippingAddressControllers = {
   addAddress,
   deleteOneAddress,
   getManyAddresses,
+  updateAddress,
 };

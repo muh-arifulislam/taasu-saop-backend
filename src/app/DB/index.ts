@@ -6,6 +6,8 @@ const superAdmin = {
   role: USER_ROLE.superAdmin,
   accountType: 'email',
   password: 'admin123',
+  firstName: 'Md. Ariful',
+  lastName: 'Islam',
 };
 
 export const seedSuperAdmin = async () => {

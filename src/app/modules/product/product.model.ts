@@ -29,6 +29,12 @@ const productSchema = new Schema<IProduct>({
     direction: { type: String },
     warnings: { type: String },
   },
+
+  images: [
+    {
+      type: String,
+    },
+  ],
   deletedAt: { type: Date },
 
   categoryId: {

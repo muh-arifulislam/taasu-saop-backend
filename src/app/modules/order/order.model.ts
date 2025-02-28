@@ -1,6 +1,10 @@
 import { model, Schema } from 'mongoose';
 import { IOrder, TOrderItem, TStatusHistory } from './order.interface';
-import { ORDER_STATUS, OrderStatus } from './order.constant';
+import {
+  ORDER_STATUS,
+  ORDER_STATUS_MESSAGES,
+  OrderStatus,
+} from './order.constant';
 
 const statusHistorySchema = new Schema<TStatusHistory>(
   {
@@ -73,8 +77,7 @@ const orderSchema = new Schema<IOrder>({
     default: () => [
       {
         status: ORDER_STATUS.pending,
-        message:
-          'Order has been successfully placed. Please! wait for confirmation.',
+        message: ORDER_STATUS_MESSAGES.Pending,
         timestamp: Date.now(),
       },
     ],

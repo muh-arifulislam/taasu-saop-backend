@@ -5,8 +5,10 @@ const router = Router();
 
 router.post('/', ShippingAddressControllers.addAddress);
 
+router.get('/', ShippingAddressControllers.getManyAddresses);
+
 router.delete('/:id', ShippingAddressControllers.deleteOneAddress);
 
-router.get('/', ShippingAddressControllers.getManyAddresses);
+router.put('/:id', ShippingAddressControllers.updateAddress);
 
 export const ShippingAddressRoutes = router;

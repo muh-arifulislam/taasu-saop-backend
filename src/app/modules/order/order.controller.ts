@@ -15,6 +15,7 @@ const placeOrderViaCOD = catchAsync(async (req, res) => {
 
 const placeOrderViaStripe = catchAsync(async (req, res) => {
   const result = await OrderServices.addOrderIntoDBViaStripe(req.body);
+
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.CREATED,
@@ -24,7 +25,7 @@ const placeOrderViaStripe = catchAsync(async (req, res) => {
 });
 
 const getUserOrders = catchAsync(async (req, res) => {
-  const result = await OrderServices.geUserOrdersFromDB(req.user.id);
+  const result = await OrderServices.geUserOrdersFromDB(req.user.id, req);
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
@@ -46,9 +47,23 @@ const getOrder = catchAsync(async (req, res) => {
   });
 });
 
+const updateOrder = catchAsync(async (req, res) => {
+  const { id } = req.params;
+
+  const result = await OrderServices.updateOrderIntoDB(id, req.body);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Order data updated successful.',
+    data: result,
+  });
+});
+
 export const OrderControllers = {
   placeOrderViaCOD,
   placeOrderViaStripe,
   getUserOrders,
   getOrder,
+  updateOrder,
 };

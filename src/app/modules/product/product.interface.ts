@@ -13,6 +13,7 @@ export interface IProduct {
     direction?: string;
     warnings?: string;
   };
+  images: string[];
   deletedAt: Date;
 
   categoryId: Schema.Types.ObjectId;
