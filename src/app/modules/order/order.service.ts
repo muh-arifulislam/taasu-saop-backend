@@ -160,9 +160,18 @@ const addOrderIntoDBViaStripe = async (payload: IOrderPayload) => {
 
 const geUserOrdersFromDB = async (id: string, req: Request) => {
   const { status } = req.query;
+
+  if (status) {
+    const result = await Order.find({
+      user: id,
+      orderStatus: status,
+    });
+
+    return result;
+  }
+
   const result = await Order.find({
     user: id,
-    orderStatus: status,
   });
 
   return result;
