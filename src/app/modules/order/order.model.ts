@@ -46,42 +46,53 @@ const orderItemSchema = new Schema<TOrderItem>(
   },
 );
 
-const orderSchema = new Schema<IOrder>({
-  user: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
+const orderSchema = new Schema<IOrder>(
+  {
+    orderId: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    shippingAddress: {
+      type: Schema.Types.ObjectId,
+      ref: 'ShippingAddress',
+      required: true,
+    },
+    items: [orderItemSchema],
+    totalAmount: {
+      type: Number,
+      min: 0,
+      required: true,
+    },
+    payment: {
+      type: Schema.Types.ObjectId,
+      ref: 'Payment',
+    },
+    orderStatus: {
+      type: String,
+      enum: [...OrderStatus],
+      default: ORDER_STATUS.pending,
+    },
+    statusHistory: {
+      type: [statusHistorySchema],
+      default: () => [
+        {
+          status: ORDER_STATUS.pending,
+          message: ORDER_STATUS_MESSAGES.Pending,
+          timestamp: Date.now(),
+        },
+      ],
+    },
   },
-  shippingAddress: {
-    type: Schema.Types.ObjectId,
-    ref: 'ShippingAddress',
-    required: true,
+  {
+    versionKey: false,
+    timestamps: true,
   },
-  items: [orderItemSchema],
-  totalAmount: {
-    type: Number,
-    min: 0,
-    required: true,
-  },
-  payment: {
-    type: Schema.Types.ObjectId,
-    ref: 'Payment',
-  },
-  orderStatus: {
-    type: String,
-    enum: [...OrderStatus],
-    default: ORDER_STATUS.pending,
-  },
-  statusHistory: {
-    type: [statusHistorySchema],
-    default: () => [
-      {
-        status: ORDER_STATUS.pending,
-        message: ORDER_STATUS_MESSAGES.Pending,
-        timestamp: Date.now(),
-      },
-    ],
-  },
-});
+);
 
 export const Order = model<IOrder>('Order', orderSchema);

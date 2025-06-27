@@ -16,6 +16,7 @@ export type TStatusHistory = {
 };
 
 export interface IOrder {
+  orderId: string;
   user: Types.ObjectId;
   items: TOrderItem[];
   totalAmount: number;
@@ -36,3 +37,13 @@ export interface IOrderPayload extends IOrder {
   orderStatus: TOrderStatus;
   statusHistory: TStatusHistory[];
 }
+
+export type TOrdersQueryParams = {
+  orderStatus?: TOrderStatus;
+  user?: string;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+  page?: number;
+  limit?: number;
+  searchTerm?: string;
+};

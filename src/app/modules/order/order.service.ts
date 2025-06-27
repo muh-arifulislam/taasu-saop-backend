@@ -1,7 +1,12 @@
 import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
 import { User } from '../user/user.model';
-import { IOrder, IOrderPayload, TStatusHistory } from './order.interface';
+import {
+  IOrder,
+  IOrderPayload,
+  TOrdersQueryParams,
+  TStatusHistory,
+} from './order.interface';
 import { ShippingAddress } from '../shippingAddress/shippingAddress.model';
 import { startSession } from 'mongoose';
 import { IPayment } from '../payment/payment.interface';
@@ -12,6 +17,7 @@ import { ORDER_STATUS, ORDER_STATUS_MESSAGES } from './order.constant';
 import { Request } from 'express';
 import Stripe from 'stripe';
 import config from '../../config';
+import { generateOrderId } from './order.utils';
 
 const addOrderIntoDB = async (payload: IOrderPayload) => {
   const user = await User.findById(payload.user);
@@ -31,6 +37,8 @@ const addOrderIntoDB = async (payload: IOrderPayload) => {
   try {
     session.startTransaction();
 
+    const orderId = await generateOrderId();
+
     const paymentPayload: IPayment = {
       method: PAYMENT_METHOD.COD,
       status: PAYMENT_STATUS.pending,
@@ -42,6 +50,7 @@ const addOrderIntoDB = async (payload: IOrderPayload) => {
     });
 
     const orderPayload: IOrder = {
+      orderId,
       user: user._id,
       shippingAddress: shippingAddress._id,
       totalAmount: payload.totalAmount,
@@ -84,6 +93,8 @@ const addOrderIntoDBViaStripe = async (payload: IOrderPayload) => {
   const session = await startSession();
 
   try {
+    const orderId = await generateOrderId();
+
     session.startTransaction();
 
     const stripe = new Stripe(config.stripe_secret as string);
@@ -131,6 +142,7 @@ const addOrderIntoDBViaStripe = async (payload: IOrderPayload) => {
     ];
 
     const orderPayload: IOrder = {
+      orderId,
       user: user._id,
       shippingAddress: shippingAddress._id,
       totalAmount: payload.totalAmount,
@@ -228,10 +240,99 @@ const updateOrderIntoDB = async (id: string, payload: Partial<IOrder>) => {
   return order;
 };
 
+const getOrdersFromDB = async (query: TOrdersQueryParams) => {
+  const aggregate = Order.aggregate([]);
+
+  //searchTerm
+  if (query.searchTerm) {
+    const searchRegex = new RegExp(query.searchTerm, 'i');
+    aggregate
+      .lookup({
+        from: 'users',
+        localField: 'user',
+        foreignField: '_id',
+        as: 'userSearch',
+      })
+      .match({
+        $or: [
+          { 'userSearch.email': { $regex: searchRegex } },
+          { 'userSearch.firstName': { $regex: searchRegex } },
+          { 'userSearch.lastName': { $regex: searchRegex } },
+        ],
+      })
+      .unwind({ path: '$userSearch', preserveNullAndEmptyArrays: true });
+  }
+
+  // filter by status
+  if (query.orderStatus) {
+    aggregate.match({ orderStatus: query.orderStatus });
+  }
+
+  //sorting
+  if (query.sortBy && query.sortOrder) {
+    aggregate.sort({ [query.sortBy]: query.sortOrder === 'asc' ? 1 : -1 });
+  }
+
+  // Pagination
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 10;
+  const skip = (page - 1) * limit;
+  aggregate.skip(skip).limit(limit);
+
+  //lookup
+  aggregate
+    .lookup({
+      from: 'payments',
+      localField: 'payment',
+      foreignField: '_id',
+      as: 'payment',
+    })
+    .unwind({ path: '$payment', preserveNullAndEmptyArrays: true })
+    .lookup({
+      from: 'users',
+      localField: 'user',
+      foreignField: '_id',
+      as: 'user',
+    })
+    .unwind({ path: '$user', preserveNullAndEmptyArrays: true });
+
+  // Project only firstName and lastName from user
+  aggregate.project({
+    totalAmount: 1,
+    items: 1,
+    orderStatus: 1,
+    orderId: 1,
+    createdAt: 1,
+    updatedAt: 1,
+    user: {
+      firstName: '$user.firstName',
+      lastName: '$user.lastName',
+      _id: '$user._id',
+    },
+    payment: {
+      status: '$payment.status',
+    },
+  });
+
+  const result = await aggregate;
+
+  const total = await Order.countDocuments(
+    query.orderStatus ? { orderStatus: query.orderStatus } : {},
+  );
+  const meta = {
+    page,
+    limit,
+    total,
+    skip,
+  };
+  return { meta, data: result };
+};
+
 export const OrderServices = {
   addOrderIntoDB,
   geUserOrdersFromDB,
   getOrderFromDB,
   addOrderIntoDBViaStripe,
   updateOrderIntoDB,
+  getOrdersFromDB,
 };

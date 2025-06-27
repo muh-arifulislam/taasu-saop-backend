@@ -23,4 +23,10 @@ router.get(
 
 router.put('/:id', OrderControllers.updateOrder);
 
+router.get(
+  '/',
+  // validateAuth(USER_ROLE.admin, USER_ROLE.superAdmin),
+  OrderControllers.getOrders,
+);
+
 export const OrderRoutes = router;

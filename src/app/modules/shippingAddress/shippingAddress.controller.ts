@@ -28,7 +28,9 @@ const deleteOneAddress = catchAsync(async (req, res) => {
 });
 
 const getManyAddresses = catchAsync(async (req, res) => {
-  const result = await ShippingAddressServices.getManyAddressFromDB();
+  const result = await ShippingAddressServices.getManyAddressFromDB(
+    req.user.id,
+  );
 
   sendResponse(res, {
     success: true,

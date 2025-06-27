@@ -51,8 +51,10 @@ const updateOneAddressIntoDB = async (
   return result;
 };
 
-const getManyAddressFromDB = async () => {
-  const result = await ShippingAddress.find();
+const getManyAddressFromDB = async (id: string) => {
+  const result = await ShippingAddress.find({
+    user: id,
+  });
   return result;
 };
 

@@ -60,10 +60,24 @@ const updateOrder = catchAsync(async (req, res) => {
   });
 });
 
+const getOrders = catchAsync(async (req, res) => {
+  const query = req.query;
+  const { meta, data } = await OrderServices.getOrdersFromDB(query);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Orders data retrieved successful.',
+    meta,
+    data,
+  });
+});
+
 export const OrderControllers = {
   placeOrderViaCOD,
   placeOrderViaStripe,
   getUserOrders,
   getOrder,
   updateOrder,
+  getOrders,
 };
