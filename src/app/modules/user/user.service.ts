@@ -1,6 +1,11 @@
 import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
-import { IUser, IUserAddress, IUserPayload } from './user.interface';
+import {
+  IUser,
+  IUserAddress,
+  IUserPayload,
+  TCustomersQueryParams,
+} from './user.interface';
 import { User, UserAddress } from './user.model';
 import { createToken } from '../auth/auth.utils';
 import config from '../../config';
@@ -98,7 +103,10 @@ const getUserFromDB = async (email: string) => {
         lastName: 1,
         mobile: 1,
         email: 1,
+        role: 1,
+        accountType: 1,
         addressLine1: '$userAddress.addressLine1',
+        addressLine2: '$userAddress.addressLine2',
         city: '$userAddress.city',
         postalCode: '$userAddress.postalCode',
       },
@@ -126,9 +134,11 @@ const updateUserIntoDB = async (
 
     const addressPayload = {
       addressLine1: payload.addressLine1,
+      addressLine2: payload.addressLine2,
       city: payload.city,
       postalCode: payload.postalCode,
     };
+
     await UserAddress.findByIdAndUpdate(user.address, addressPayload, {
       upsert: true,
       runValidators: true,
@@ -159,4 +169,89 @@ const updateUserIntoDB = async (
   }
 };
 
-export const UserServices = { addUserIntoDB, getUserFromDB, updateUserIntoDB };
+const getCustomerUsersFromDB = async (query: TCustomersQueryParams) => {
+  // Build aggregation pipeline
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const pipeline: any[] = [];
+
+  //match customers only
+  pipeline.push({
+    $match: {
+      role: 'customer',
+    },
+  });
+
+  // Add fullName field
+  pipeline.push({
+    $addFields: {
+      fullName: {
+        $concat: [
+          { $ifNull: ['$firstName', ''] },
+          ' ',
+          { $ifNull: ['$lastName', ''] },
+        ],
+      },
+    },
+  });
+
+  //searchTerm
+  if (query.searchTerm) {
+    const searchRegex = new RegExp(query.searchTerm, 'i');
+    pipeline.push({
+      $match: {
+        $or: [
+          { email: { $regex: searchRegex } },
+          { firstName: { $regex: searchRegex } },
+          { lastName: { $regex: searchRegex } },
+          { fullName: { $regex: searchRegex } },
+        ],
+      },
+    });
+  }
+
+  //sorting
+  if (query.sortBy && query.sortOrder) {
+    pipeline.push({
+      $sort: { [query.sortBy]: query.sortOrder === 'asc' ? 1 : -1 },
+    });
+  }
+
+  // Pagination
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 10;
+  const skip = (page - 1) * limit;
+  pipeline.push({ $skip: skip });
+  pipeline.push({ $limit: limit });
+
+  // Project only firstName, lastName, and fullName from user
+  pipeline.push({
+    $project: {
+      firstName: 1,
+      lastName: 1,
+      email: 1,
+      mobile: 1,
+      role: 1,
+      createdAt: 1,
+      fullName: 1, // Ensure fullName is included in the projection
+    },
+  });
+
+  const result = await User.aggregate(pipeline);
+
+  const total = await User.countDocuments();
+
+  const meta = {
+    page,
+    limit,
+    total,
+    skip,
+  };
+  return { meta, data: result };
+};
+
+export const UserServices = {
+  addUserIntoDB,
+  getUserFromDB,
+  updateUserIntoDB,
+  getCustomerUsersFromDB,
+};

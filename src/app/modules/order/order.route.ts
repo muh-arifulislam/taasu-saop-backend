@@ -17,7 +17,7 @@ router.get(
 
 router.get(
   '/:id',
-  validateAuth(USER_ROLE.customer, USER_ROLE.admin, USER_ROLE.superAdmin),
+  // validateAuth(USER_ROLE.customer, USER_ROLE.admin, USER_ROLE.superAdmin),
   OrderControllers.getOrder,
 );
 

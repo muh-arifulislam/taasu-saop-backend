@@ -1,6 +1,6 @@
 import { Document, Types } from 'mongoose';
 
-export type TUserRole = 'admin' | 'customer' | 'superAdmin';
+export type TUserRole = 'admin' | 'customer' | 'superAdmin' | 'moderator';
 
 export type TAccountType = 'email' | 'google';
 
@@ -26,3 +26,11 @@ export interface IUserAddress {
 }
 
 export interface IUserPayload extends IUser, IUserAddress {}
+
+export type TCustomersQueryParams = {
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+  page?: number;
+  limit?: number;
+  searchTerm?: string;
+};

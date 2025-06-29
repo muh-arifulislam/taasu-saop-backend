@@ -189,11 +189,15 @@ const geUserOrdersFromDB = async (id: string, req: Request) => {
   return result;
 };
 
-const getOrderFromDB = async (id: string, userId: string) => {
+const getOrderFromDB = async (id: string) => {
   const result = await Order.findOne({
-    _id: id,
-    user: userId,
-  }).populate('shippingAddress');
+    orderId: id,
+  })
+    .populate('shippingAddress')
+    .populate({
+      path: 'items.product',
+      select: 'images name _id',
+    });
 
   if (!result) {
     throw new AppError(httpStatus.NOT_FOUND, 'Order not found');
@@ -253,11 +257,21 @@ const getOrdersFromDB = async (query: TOrdersQueryParams) => {
         foreignField: '_id',
         as: 'userSearch',
       })
+      .addFields({
+        fullName: {
+          $concat: [
+            { $ifNull: [{ $arrayElemAt: ['$userSearch.firstName', 0] }, ''] },
+            ' ',
+            { $ifNull: [{ $arrayElemAt: ['$userSearch.lastName', 0] }, ''] },
+          ],
+        },
+      })
       .match({
         $or: [
           { 'userSearch.email': { $regex: searchRegex } },
           { 'userSearch.firstName': { $regex: searchRegex } },
           { 'userSearch.lastName': { $regex: searchRegex } },
+          { fullName: { $regex: searchRegex } },
         ],
       })
       .unwind({ path: '$userSearch', preserveNullAndEmptyArrays: true });
@@ -319,6 +333,7 @@ const getOrdersFromDB = async (query: TOrdersQueryParams) => {
   const total = await Order.countDocuments(
     query.orderStatus ? { orderStatus: query.orderStatus } : {},
   );
+
   const meta = {
     page,
     limit,

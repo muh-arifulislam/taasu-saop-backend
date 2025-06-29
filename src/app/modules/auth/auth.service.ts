@@ -2,12 +2,13 @@ import httpStatus from 'http-status';
 import config from '../../config';
 import AppError from '../../errors/AppError';
 import { User } from '../user/user.model';
-import { TLoginUser } from './auth.interface';
+import { TChangePasswordPayload, TLoginUser } from './auth.interface';
 import { createToken } from './auth.utils';
 import bcrypt from 'bcrypt';
 
 import { UserServices } from '../user/user.service';
 import { IUserPayload } from '../user/user.interface';
+import { generateHashedPassword } from '../../utils/generateHashedPasswod';
 
 const loginUser = async (payload: TLoginUser) => {
   // checking if the user is exist
@@ -77,7 +78,47 @@ const loginWithGoogle = async (payload: IUserPayload) => {
   }
 };
 
+const changeEmailPassword = async (
+  userEmail: string,
+  payload: TChangePasswordPayload,
+) => {
+  const user = await User.findOne({ email: userEmail });
+  if (!user) {
+    throw new AppError(httpStatus.FORBIDDEN, 'User not found');
+  }
+
+  if (payload.currentPassword === payload.newPassword) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'Both current and new password is same',
+    );
+  }
+
+  if (user.accountType === 'google') {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'Can not changed google account password.',
+    );
+  }
+  console.log(user.password);
+  const isPasswordMatched = await bcrypt.compare(
+    payload.currentPassword,
+    user.password as string,
+  );
+  console.log(isPasswordMatched);
+  if (!isPasswordMatched) {
+    throw new AppError(httpStatus.FORBIDDEN, 'Password did not matched...!');
+  }
+
+  const hashedPassword = await generateHashedPassword(payload.newPassword);
+  user.password = hashedPassword;
+  await user.save();
+
+  return null;
+};
+
 export const AuthServices = {
   loginUser,
   loginWithGoogle,
+  changeEmailPassword,
 };

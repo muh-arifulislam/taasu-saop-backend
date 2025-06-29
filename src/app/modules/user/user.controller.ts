@@ -36,4 +36,20 @@ const updateUser = catchAsync(async (req, res) => {
   });
 });
 
-export const UserControllers = { addUser, getUser, updateUser };
+const getCustomerUsers = catchAsync(async (req, res) => {
+  const { meta, data } = await UserServices.getCustomerUsersFromDB(req.query);
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Customer data fetch successfully',
+    data,
+    meta,
+  });
+});
+
+export const UserControllers = {
+  addUser,
+  getUser,
+  updateUser,
+  getCustomerUsers,
+};
