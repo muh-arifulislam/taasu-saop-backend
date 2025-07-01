@@ -18,6 +18,7 @@ import { Request } from 'express';
 import Stripe from 'stripe';
 import config from '../../config';
 import { generateOrderId } from './order.utils';
+import { ProductInventoryServices } from '../productInventory/productInventory.service';
 
 const addOrderIntoDB = async (payload: IOrderPayload) => {
   const user = await User.findById(payload.user);
@@ -154,6 +155,16 @@ const addOrderIntoDBViaStripe = async (payload: IOrderPayload) => {
 
     const order = await Order.create([orderPayload], { session });
 
+    await Promise.all(
+      payload.items.map(async (item) => {
+        await ProductInventoryServices.updateOneIntoDB(
+          item.product,
+          item.quantity,
+          { session },
+        );
+      }),
+    );
+
     await session.commitTransaction();
     await session.endSession();
 
@@ -194,10 +205,21 @@ const getOrderFromDB = async (id: string) => {
     orderId: id,
   })
     .populate('shippingAddress')
-    .populate({
-      path: 'items.product',
-      select: 'images name _id',
-    });
+    .populate([
+      {
+        path: 'items.product',
+        select: 'images name _id',
+      },
+      {
+        path: 'payment',
+      },
+      {
+        path: 'user',
+        populate: {
+          path: 'address',
+        },
+      },
+    ]);
 
   if (!result) {
     throw new AppError(httpStatus.NOT_FOUND, 'Order not found');
@@ -208,40 +230,74 @@ const getOrderFromDB = async (id: string) => {
 
 const updateOrderIntoDB = async (id: string, payload: Partial<IOrder>) => {
   const { orderStatus } = payload;
-
   const order = await Order.findById(id);
   if (!order) {
     throw new AppError(httpStatus.NOT_FOUND, 'Order has not found.');
   }
 
-  const isStatusAlreadyExists = order.statusHistory?.some((status) => {
-    if (status.status === orderStatus) {
-      return true;
-    }
-  });
+  const session = await startSession();
+  try {
+    session.startTransaction();
 
-  if (orderStatus && !isStatusAlreadyExists) {
-    const updatedOrder = await order.updateOne(
-      {
-        $set: {
-          orderStatus: orderStatus,
-        },
-        $addToSet: {
-          statusHistory: {
-            status: orderStatus,
-            message: ORDER_STATUS_MESSAGES[orderStatus],
+    const isStatusAlreadyExists = order.statusHistory?.some(
+      (status) => status.status === orderStatus,
+    );
+
+    // If status is new, proceed to update
+    if (orderStatus && !isStatusAlreadyExists) {
+      const updatedOrder = await Order.findOneAndUpdate(
+        { _id: id },
+        {
+          $set: {
+            orderStatus: orderStatus,
+          },
+          $addToSet: {
+            statusHistory: {
+              status: orderStatus,
+              message: ORDER_STATUS_MESSAGES[orderStatus],
+            },
           },
         },
-      },
-      {
-        new: true,
-        runValidators: true,
-      },
-    );
-    return updatedOrder;
-  }
+        {
+          runValidators: true,
+          new: true,
+          session,
+        },
+      );
 
-  return order;
+      if (!updatedOrder) {
+        throw new AppError(
+          httpStatus.NOT_FOUND,
+          'Failed to update order status.',
+        );
+      }
+
+      // Update inventory only on "Processing"
+      if (updatedOrder.orderStatus === 'Processing') {
+        await Promise.all(
+          updatedOrder.items.map(async (item) => {
+            await ProductInventoryServices.updateOneIntoDB(
+              item.product,
+              item.quantity,
+              { session },
+            );
+          }),
+        );
+      }
+
+      await session.commitTransaction(); // ✅ Commit after successful update
+      return updatedOrder;
+    }
+
+    await session.commitTransaction(); // ✅ Even if status already exists
+    return order;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
+    await session.abortTransaction();
+    throw new AppError(httpStatus.BAD_REQUEST, err?.message);
+  } finally {
+    await session.endSession(); // ✅ Always end session
+  }
 };
 
 const getOrdersFromDB = async (query: TOrdersQueryParams) => {

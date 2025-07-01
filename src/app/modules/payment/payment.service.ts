@@ -7,4 +7,10 @@ const addPaymentIntoDB = async (payload: IPayment) => {
   return result;
 };
 
-export const PaymentServices = { addPaymentIntoDB };
+const getPaymentsFromDB = async () => {
+  const result = await Payment.find();
+
+  return result;
+};
+
+export const PaymentServices = { addPaymentIntoDB, getPaymentsFromDB };

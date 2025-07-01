@@ -2,6 +2,8 @@ import { Document } from 'mongoose';
 
 export interface IProductCategory extends Document {
   name: string;
-  description?: string;
-  deletedAt?: Date;
+  slug: string;
+  parent?: string; // Optional for subcategories
+  type: 'type' | 'skinType' | 'scent' | 'useCase' | 'feature'; // category group
+  isActive: boolean;
 }

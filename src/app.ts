@@ -19,6 +19,7 @@ app.use(
       'http://localhost:5173',
       'https://taasu-soap.web.app',
       'http://localhost:5174',
+      'https://admin-taasu-soap.netlify.app',
     ],
     credentials: true,
   }),

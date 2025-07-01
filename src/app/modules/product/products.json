@@ -1,0 +1,737 @@
+[
+  {
+    "name": "Lavender & Goat Milk Artisan Soap",
+    "sku": "SKU-5B30D4D3",
+    "price": 8.23,
+    "descriptions": [
+      "Infused with essential oils for aromatherapy.",
+      "Soothing and calming for sensitive skin.",
+      "Perfect for daily use."
+    ],
+    "advantages": ["Chemical-free", "Eco-friendly", "Long-lasting"],
+    "ingredients": ["Lavender essential oil", "Goat milk", "Charcoal"],
+    "addInformation": {
+      "weight": "131g",
+      "dimension": "9x4x10 cm",
+      "direction": "Apply to wet skin, lather, and rinse thoroughly.",
+      "warnings": "Avoid contact with eyes. For external use only."
+    },
+    "images": [
+      "https://example.com/images/soap2.jpg",
+      "https://example.com/images/soap1.jpg"
+    ],
+    "deletedAt": null,
+    "categoryId": { "$oid": "6862e96a614327fd9735796d" },
+    "inventoryId": { "$oid": "6862ee84cc1e01cc773ca1f6" },
+    "discountId": null
+  },
+  {
+    "name": "Charcoal & Shea Butter Detox Soap",
+    "sku": "SKU-19FE318E",
+    "price": 15.39,
+    "descriptions": [
+      "Infused with essential oils for aromatherapy.",
+      "A gentle handmade soap bar.",
+      "Perfect for daily use."
+    ],
+    "advantages": ["Eco-friendly", "Cruelty free", "Moisturizing"],
+    "ingredients": ["Shea butter", "Charcoal", "Goat milk"],
+    "addInformation": {
+      "weight": "102g",
+      "dimension": "6x2x10 cm",
+      "direction": "Apply to wet skin, lather, and rinse thoroughly.",
+      "warnings": "Avoid contact with eyes. For external use only."
+    },
+    "images": [
+      "https://example.com/images/soap1.jpg",
+      "https://example.com/images/soap2.jpg"
+    ],
+    "deletedAt": null,
+    "categoryId": { "$oid": "6862e96a614327fd9735796c" },
+    "inventoryId": { "$oid": "6862ee84cc1e01cc773ca1f7" },
+    "discountId": null
+  },
+  {
+    "name": "Coconut Oil & Goat Milk Moisturizing Soap",
+    "sku": "SKU-98E054CC",
+    "price": 5.74,
+    "descriptions": [
+      "Rich lather and natural fragrance.",
+      "Perfect for daily use.",
+      "A gentle handmade soap bar."
+    ],
+    "advantages": ["Cruelty free", "Organic", "Moisturizing"],
+    "ingredients": ["Charcoal", "Coconut oil", "Goat milk"],
+    "addInformation": {
+      "weight": "99g",
+      "dimension": "6x3x8 cm",
+      "direction": "Apply to wet skin, lather, and rinse thoroughly.",
+      "warnings": "Avoid contact with eyes. For external use only."
+    },
+    "images": ["https://example.com/images/soap1.jpg"],
+    "deletedAt": null,
+    "categoryId": { "$oid": "6862e96a614327fd9735796d" },
+    "inventoryId": { "$oid": "6862ee84cc1e01cc773ca1f8" },
+    "discountId": null
+  },
+  {
+    "name": "Lavender & Olive Oil Relaxation Soap",
+    "sku": "SKU-8C1E2BFF",
+    "price": 14.27,
+    "descriptions": [
+      "Soothing and calming for sensitive skin.",
+      "Rich lather and natural fragrance.",
+      "Perfect for daily use."
+    ],
+    "advantages": ["Long-lasting", "Moisturizing", "Eco-friendly"],
+    "ingredients": ["Shea butter", "Lavender essential oil", "Olive oil"],
+    "addInformation": {
+      "weight": "114g",
+      "dimension": "9x4x11 cm",
+      "direction": "Apply to wet skin, lather, and rinse thoroughly.",
+      "warnings": "Avoid contact with eyes. For external use only."
+    },
+    "images": ["https://example.com/images/soap2.jpg"],
+    "deletedAt": null,
+    "categoryId": { "$oid": "6862e96a614327fd9735796a" },
+    "inventoryId": { "$oid": "6862ee84cc1e01cc773ca1f9" },
+    "discountId": null
+  },
+  {
+    "name": "Olive Oil & Charcoal Deep Cleansing Soap",
+    "sku": "SKU-3FBD298A",
+    "price": 7.99,
+    "descriptions": [
+      "A gentle handmade soap bar.",
+      "Infused with essential oils for aromatherapy.",
+      "Perfect for daily use."
+    ],
+    "advantages": ["Cruelty free", "Chemical-free", "Organic"],
+    "ingredients": ["Goat milk", "Olive oil", "Charcoal"],
+    "addInformation": {
+      "weight": "129g",
+      "dimension": "8x3x10 cm",
+      "direction": "Apply to wet skin, lather, and rinse thoroughly.",
+      "warnings": "Avoid contact with eyes. For external use only."
+    },
+    "images": [
+      "https://example.com/images/soap3.jpg",
+      "https://example.com/images/soap1.jpg"
+    ],
+    "deletedAt": null,
+    "categoryId": { "$oid": "6862e96a614327fd97357969" },
+    "inventoryId": { "$oid": "6862ee84cc1e01cc773ca1fa" },
+    "discountId": null
+  },
+  {
+    "name": "Coconut Milk & Lavender Gentle Soap",
+    "sku": "SKU-4D3E7614",
+    "price": 13.88,
+    "descriptions": [
+      "Soothing and calming for sensitive skin.",
+      "Perfect for daily use.",
+      "Rich lather and natural fragrance."
+    ],
+    "advantages": ["Eco-friendly", "Moisturizing", "Long-lasting"],
+    "ingredients": ["Coconut oil", "Goat milk", "Lavender essential oil"],
+    "addInformation": {
+      "weight": "108g",
+      "dimension": "7x4x8 cm",
+      "direction": "Apply to wet skin, lather, and rinse thoroughly.",
+      "warnings": "Avoid contact with eyes. For external use only."
+    },
+    "images": ["https://example.com/images/soap2.jpg"],
+    "deletedAt": null,
+    "categoryId": { "$oid": "6862e96a614327fd9735796b" },
+    "inventoryId": { "$oid": "6862ee84cc1e01cc773ca1fb" },
+    "discountId": null
+  },
+  {
+    "name": "Shea Butter & Lavender Luxury Soap",
+    "sku": "SKU-1B4B0A93",
+    "price": 10.26,
+    "descriptions": [
+      "Rich lather and natural fragrance.",
+      "Soothing and calming for sensitive skin.",
+      "Infused with essential oils for aromatherapy."
+    ],
+    "advantages": ["Organic", "Cruelty free", "Eco-friendly"],
+    "ingredients": ["Lavender essential oil", "Shea butter", "Goat milk"],
+    "addInformation": {
+      "weight": "93g",
+      "dimension": "9x4x8 cm",
+      "direction": "Apply to wet skin, lather, and rinse thoroughly.",
+      "warnings": "Avoid contact with eyes. For external use only."
+    },
+    "images": ["https://example.com/images/soap1.jpg"],
+    "deletedAt": null,
+    "categoryId": { "$oid": "6862e96a614327fd9735796d" },
+    "inventoryId": { "$oid": "6862ee84cc1e01cc773ca1fc" },
+    "discountId": null
+  },
+  {
+    "name": "Activated Charcoal Purifying Soap",
+    "sku": "SKU-C7B41D5E",
+    "price": 12.62,
+    "descriptions": [
+      "A gentle handmade soap bar.",
+      "Perfect for daily use.",
+      "Rich lather and natural fragrance."
+    ],
+    "advantages": ["Long-lasting", "Cruelty free", "Chemical-free"],
+    "ingredients": ["Charcoal", "Coconut oil", "Olive oil"],
+    "addInformation": {
+      "weight": "102g",
+      "dimension": "9x3x11 cm",
+      "direction": "Apply to wet skin, lather, and rinse thoroughly.",
+      "warnings": "Avoid contact with eyes. For external use only."
+    },
+    "images": [
+      "https://example.com/images/soap3.jpg",
+      "https://example.com/images/soap2.jpg"
+    ],
+    "deletedAt": null,
+    "categoryId": { "$oid": "6862e96a614327fd97357979" },
+    "inventoryId": { "$oid": "6862ee84cc1e01cc773ca1fd" },
+    "discountId": null
+  },
+  {
+    "name": "Lavender Dream Handmade Soap",
+    "sku": "SKU-3CE7703E",
+    "price": 6.48,
+    "descriptions": [
+      "Infused with essential oils for aromatherapy.",
+      "Soothing and calming for sensitive skin.",
+      "Perfect for daily use."
+    ],
+    "advantages": ["Chemical-free", "Moisturizing", "Eco-friendly"],
+    "ingredients": ["Goat milk", "Lavender essential oil", "Charcoal"],
+    "addInformation": {
+      "weight": "85g",
+      "dimension": "10x4x9 cm",
+      "direction": "Apply to wet skin, lather, and rinse thoroughly.",
+      "warnings": "Avoid contact with eyes. For external use only."
+    },
+    "images": ["https://example.com/images/soap1.jpg"],
+    "deletedAt": null,
+    "categoryId": { "$oid": "6862e96a614327fd9735796d" },
+    "inventoryId": { "$oid": "6862ee84cc1e01cc773ca1fe" },
+    "discountId": null
+  },
+  {
+    "name": "Shea Butter Nourishing Soap Bar",
+    "sku": "SKU-5D35C621",
+    "price": 14.84,
+    "descriptions": [
+      "Perfect for daily use.",
+      "Rich lather and natural fragrance.",
+      "A gentle handmade soap bar."
+    ],
+    "advantages": ["Organic", "Cruelty free", "Chemical-free"],
+    "ingredients": ["Shea butter", "Lavender essential oil", "Goat milk"],
+    "addInformation": {
+      "weight": "139g",
+      "dimension": "7x4x10 cm",
+      "direction": "Apply to wet skin, lather, and rinse thoroughly.",
+      "warnings": "Avoid contact with eyes. For external use only."
+    },
+    "images": [
+      "https://example.com/images/soap2.jpg",
+      "https://example.com/images/soap3.jpg"
+    ],
+    "deletedAt": null,
+    "categoryId": { "$oid": "6862e96a614327fd9735796c" },
+    "inventoryId": { "$oid": "6862ee84cc1e01cc773ca1ff" },
+    "discountId": null
+  },
+  {
+    "name": "Olive Oil & Charcoal Detox Bar",
+    "sku": "SKU-DAA26E1F",
+    "price": 10.79,
+    "descriptions": [
+      "Soothing and calming for sensitive skin.",
+      "Rich lather and natural fragrance.",
+      "Perfect for daily use."
+    ],
+    "advantages": ["Eco-friendly", "Moisturizing", "Cruelty free"],
+    "ingredients": ["Charcoal", "Olive oil", "Goat milk"],
+    "addInformation": {
+      "weight": "92g",
+      "dimension": "8x2x12 cm",
+      "direction": "Apply to wet skin, lather, and rinse thoroughly.",
+      "warnings": "Avoid contact with eyes. For external use only."
+    },
+    "images": ["https://example.com/images/soap3.jpg"],
+    "deletedAt": null,
+    "categoryId": { "$oid": "6862e96a614327fd9735796b" },
+    "inventoryId": { "$oid": "6862ee84cc1e01cc773ca200" },
+    "discountId": null
+  },
+  {
+    "name": "Lavender & Shea Butter Artisan Soap",
+    "sku": "SKU-CA1C0E67",
+    "price": 11.05,
+    "descriptions": [
+      "A gentle handmade soap bar.",
+      "Infused with essential oils for aromatherapy.",
+      "Perfect for daily use."
+    ],
+    "advantages": ["Long-lasting", "Organic", "Eco-friendly"],
+    "ingredients": ["Shea butter", "Goat milk", "Lavender essential oil"],
+    "addInformation": {
+      "weight": "120g",
+      "dimension": "9x3x11 cm",
+      "direction": "Apply to wet skin, lather, and rinse thoroughly.",
+      "warnings": "Avoid contact with eyes. For external use only."
+    },
+    "images": [
+      "https://example.com/images/soap1.jpg",
+      "https://example.com/images/soap2.jpg"
+    ],
+    "deletedAt": null,
+    "categoryId": { "$oid": "6862e96a614327fd97357968" },
+    "inventoryId": { "$oid": "6862ee84cc1e01cc773ca201" },
+    "discountId": null
+  },
+  {
+    "name": "Charcoal & Coconut Oil Exfoliating Soap",
+    "sku": "SKU-0A8E34FA",
+    "price": 7.27,
+    "descriptions": [
+      "Soothing and calming for sensitive skin.",
+      "Perfect for daily use.",
+      "Rich lather and natural fragrance."
+    ],
+    "advantages": ["Cruelty free", "Chemical-free", "Moisturizing"],
+    "ingredients": ["Charcoal", "Lavender essential oil", "Coconut oil"],
+    "addInformation": {
+      "weight": "115g",
+      "dimension": "7x3x9 cm",
+      "direction": "Apply to wet skin, lather, and rinse thoroughly.",
+      "warnings": "Avoid contact with eyes. For external use only."
+    },
+    "images": ["https://example.com/images/soap3.jpg"],
+    "deletedAt": null,
+    "categoryId": { "$oid": "6862e96a614327fd97357979" },
+    "inventoryId": { "$oid": "6862ee84cc1e01cc773ca202" },
+    "discountId": null
+  },
+  {
+    "name": "Olive Oil & Goat Milk Classic Soap",
+    "sku": "SKU-9F1B6205",
+    "price": 9.94,
+    "descriptions": [
+      "Infused with essential oils for aromatherapy.",
+      "Perfect for daily use.",
+      "A gentle handmade soap bar."
+    ],
+    "advantages": ["Organic", "Eco-friendly", "Long-lasting"],
+    "ingredients": ["Goat milk", "Olive oil", "Charcoal"],
+    "addInformation": {
+      "weight": "133g",
+      "dimension": "8x4x8 cm",
+      "direction": "Apply to wet skin, lather, and rinse thoroughly.",
+      "warnings": "Avoid contact with eyes. For external use only."
+    },
+    "images": [
+      "https://example.com/images/soap1.jpg",
+      "https://example.com/images/soap2.jpg"
+    ],
+    "deletedAt": null,
+    "categoryId": { "$oid": "6862e96a614327fd9735796d" },
+    "inventoryId": { "$oid": "6862ee84cc1e01cc773ca203" },
+    "discountId": null
+  },
+  {
+    "name": "Coconut & Lavender Skin Therapy Soap",
+    "sku": "SKU-381A5CCF",
+    "price": 6.03,
+    "descriptions": [
+      "Rich lather and natural fragrance.",
+      "Soothing and calming for sensitive skin.",
+      "Perfect for daily use."
+    ],
+    "advantages": ["Chemical-free", "Cruelty free", "Eco-friendly"],
+    "ingredients": ["Coconut oil", "Goat milk", "Lavender essential oil"],
+    "addInformation": {
+      "weight": "96g",
+      "dimension": "6x2x11 cm",
+      "direction": "Apply to wet skin, lather, and rinse thoroughly.",
+      "warnings": "Avoid contact with eyes. For external use only."
+    },
+    "images": ["https://example.com/images/soap3.jpg"],
+    "deletedAt": null,
+    "categoryId": { "$oid": "6862e96a614327fd9735796b" },
+    "inventoryId": { "$oid": "6862ee84cc1e01cc773ca204" },
+    "discountId": null
+  },
+  {
+    "name": "Lavender & Olive Oil Spa Soap",
+    "sku": "SKU-C4815A53",
+    "price": 14.46,
+    "descriptions": [
+      "A gentle handmade soap bar.",
+      "Infused with essential oils for aromatherapy.",
+      "Perfect for daily use."
+    ],
+    "advantages": ["Organic", "Long-lasting", "Moisturizing"],
+    "ingredients": ["Lavender essential oil", "Olive oil", "Goat milk"],
+    "addInformation": {
+      "weight": "134g",
+      "dimension": "10x3x9 cm",
+      "direction": "Apply to wet skin, lather, and rinse thoroughly.",
+      "warnings": "Avoid contact with eyes. For external use only."
+    },
+    "images": [
+      "https://example.com/images/soap2.jpg",
+      "https://example.com/images/soap1.jpg"
+    ],
+    "deletedAt": null,
+    "categoryId": { "$oid": "6862e96a614327fd97357969" },
+    "inventoryId": { "$oid": "6862ee84cc1e01cc773ca205" },
+    "discountId": null
+  },
+  {
+    "name": "Charcoal & Shea Butter Clarifying Soap",
+    "sku": "SKU-1B274238",
+    "price": 10.54,
+    "descriptions": [
+      "Rich lather and natural fragrance.",
+      "Soothing and calming for sensitive skin.",
+      "Perfect for daily use."
+    ],
+    "advantages": ["Eco-friendly", "Cruelty free", "Chemical-free"],
+    "ingredients": ["Charcoal", "Goat milk", "Shea butter"],
+    "addInformation": {
+      "weight": "88g",
+      "dimension": "9x2x10 cm",
+      "direction": "Apply to wet skin, lather, and rinse thoroughly.",
+      "warnings": "Avoid contact with eyes. For external use only."
+    },
+    "images": ["https://example.com/images/soap3.jpg"],
+    "deletedAt": null,
+    "categoryId": { "$oid": "6862e96a614327fd9735796d" },
+    "inventoryId": { "$oid": "6862ee84cc1e01cc773ca206" },
+    "discountId": null
+  },
+  {
+    "name": "Olive Oil & Lavender Handcrafted Soap",
+    "sku": "SKU-27DBD5E7",
+    "price": 11.73,
+    "descriptions": [
+      "A gentle handmade soap bar.",
+      "Infused with essential oils for aromatherapy.",
+      "Perfect for daily use."
+    ],
+    "advantages": ["Cruelty free", "Organic", "Eco-friendly"],
+    "ingredients": ["Olive oil", "Lavender essential oil", "Goat milk"],
+    "addInformation": {
+      "weight": "122g",
+      "dimension": "8x4x10 cm",
+      "direction": "Apply to wet skin, lather, and rinse thoroughly.",
+      "warnings": "Avoid contact with eyes. For external use only."
+    },
+    "images": [
+      "https://example.com/images/soap1.jpg",
+      "https://example.com/images/soap2.jpg"
+    ],
+    "deletedAt": null,
+    "categoryId": { "$oid": "6862e96a614327fd97357968" },
+    "inventoryId": { "$oid": "6862ee84cc1e01cc773ca207" },
+    "discountId": null
+  },
+  {
+    "name": "Coconut & Charcoal Revitalizing Soap",
+    "sku": "SKU-BB34F9C1",
+    "price": 8.61,
+    "descriptions": [
+      "Soothing and calming for sensitive skin.",
+      "Rich lather and natural fragrance.",
+      "Perfect for daily use."
+    ],
+    "advantages": ["Long-lasting", "Moisturizing", "Chemical-free"],
+    "ingredients": ["Goat milk", "Coconut oil", "Charcoal"],
+    "addInformation": {
+      "weight": "95g",
+      "dimension": "7x3x11 cm",
+      "direction": "Apply to wet skin, lather, and rinse thoroughly.",
+      "warnings": "Avoid contact with eyes. For external use only."
+    },
+    "images": ["https://example.com/images/soap3.jpg"],
+    "deletedAt": null,
+    "categoryId": { "$oid": "6862e96a614327fd97357979" },
+    "inventoryId": { "$oid": "6862ee84cc1e01cc773ca208" },
+    "discountId": null
+  },
+  {
+    "name": "Lavender & Olive Oil Heritage Soap",
+    "sku": "SKU-49C0A11D",
+    "price": 7.47,
+    "descriptions": [
+      "A gentle handmade soap bar.",
+      "Infused with essential oils for aromatherapy.",
+      "Perfect for daily use."
+    ],
+    "advantages": ["Eco-friendly", "Cruelty free", "Chemical-free"],
+    "ingredients": ["Lavender essential oil", "Olive oil", "Shea butter"],
+    "addInformation": {
+      "weight": "105g",
+      "dimension": "8x4x9 cm",
+      "direction": "Apply to wet skin, lather, and rinse thoroughly.",
+      "warnings": "Avoid contact with eyes. For external use only."
+    },
+    "images": [
+      "https://example.com/images/soap1.jpg",
+      "https://example.com/images/soap2.jpg"
+    ],
+    "deletedAt": null,
+    "categoryId": { "$oid": "6862e96a614327fd9735796a" },
+    "inventoryId": { "$oid": "6862ee84cc1e01cc773ca209" },
+    "discountId": null
+  },
+  {
+    "name": "Goat Milk & Charcoal Renewal Soap",
+    "sku": "SKU-8E0EED5C",
+    "price": 13.76,
+    "descriptions": [
+      "Rich lather and natural fragrance.",
+      "Perfect for daily use.",
+      "Soothing and calming for sensitive skin."
+    ],
+    "advantages": ["Organic", "Moisturizing", "Long-lasting"],
+    "ingredients": ["Goat milk", "Charcoal", "Coconut oil"],
+    "addInformation": {
+      "weight": "109g",
+      "dimension": "9x3x10 cm",
+      "direction": "Apply to wet skin, lather, and rinse thoroughly.",
+      "warnings": "Avoid contact with eyes. For external use only."
+    },
+    "images": ["https://example.com/images/soap3.jpg"],
+    "deletedAt": null,
+    "categoryId": { "$oid": "6862e96a614327fd9735796b" },
+    "inventoryId": { "$oid": "6862ee84cc1e01cc773ca20a" },
+    "discountId": null
+  },
+  {
+    "name": "Olive Oil & Lavender Botanical Soap",
+    "sku": "SKU-118CE2D9",
+    "price": 9.51,
+    "descriptions": [
+      "A gentle handmade soap bar.",
+      "Infused with essential oils for aromatherapy.",
+      "Perfect for daily use."
+    ],
+    "advantages": ["Cruelty free", "Eco-friendly", "Chemical-free"],
+    "ingredients": ["Olive oil", "Shea butter", "Lavender essential oil"],
+    "addInformation": {
+      "weight": "107g",
+      "dimension": "7x3x11 cm",
+      "direction": "Apply to wet skin, lather, and rinse thoroughly.",
+      "warnings": "Avoid contact with eyes. For external use only."
+    },
+    "images": [
+      "https://example.com/images/soap1.jpg",
+      "https://example.com/images/soap2.jpg"
+    ],
+    "deletedAt": null,
+    "categoryId": { "$oid": "6862e96a614327fd97357967" },
+    "inventoryId": { "$oid": "6862ee84cc1e01cc773ca20b" },
+    "discountId": null
+  },
+  {
+    "name": "Charcoal & Goat Milk Balancing Soap",
+    "sku": "SKU-73AF9D56",
+    "price": 7.23,
+    "descriptions": [
+      "Soothing and calming for sensitive skin.",
+      "Rich lather and natural fragrance.",
+      "Perfect for daily use."
+    ],
+    "advantages": ["Long-lasting", "Organic", "Moisturizing"],
+    "ingredients": ["Charcoal", "Goat milk", "Coconut oil"],
+    "addInformation": {
+      "weight": "100g",
+      "dimension": "6x4x9 cm",
+      "direction": "Apply to wet skin, lather, and rinse thoroughly.",
+      "warnings": "Avoid contact with eyes. For external use only."
+    },
+    "images": ["https://example.com/images/soap3.jpg"],
+    "deletedAt": null,
+    "categoryId": { "$oid": "6862e96a614327fd9735796c" },
+    "inventoryId": { "$oid": "6862ee84cc1e01cc773ca20c" },
+    "discountId": null
+  },
+  {
+    "name": "Lavender & Goat Milk Serenity Soap",
+    "sku": "SKU-3F56B4E0",
+    "price": 11.31,
+    "descriptions": [
+      "Infused with essential oils for aromatherapy.",
+      "Perfect for daily use.",
+      "A gentle handmade soap bar."
+    ],
+    "advantages": ["Cruelty free", "Chemical-free", "Eco-friendly"],
+    "ingredients": ["Lavender essential oil", "Olive oil", "Goat milk"],
+    "addInformation": {
+      "weight": "125g",
+      "dimension": "8x3x10 cm",
+      "direction": "Apply to wet skin, lather, and rinse thoroughly.",
+      "warnings": "Avoid contact with eyes. For external use only."
+    },
+    "images": [
+      "https://example.com/images/soap1.jpg",
+      "https://example.com/images/soap2.jpg"
+    ],
+    "deletedAt": null,
+    "categoryId": { "$oid": "6862e96a614327fd97357969" },
+    "inventoryId": { "$oid": "6862ee84cc1e01cc773ca20d" },
+    "discountId": null
+  },
+  {
+    "name": "Charcoal & Coconut Purification Soap",
+    "sku": "SKU-B1129B68",
+    "price": 8.82,
+    "descriptions": [
+      "Rich lather and natural fragrance.",
+      "Soothing and calming for sensitive skin.",
+      "Perfect for daily use."
+    ],
+    "advantages": ["Moisturizing", "Organic", "Long-lasting"],
+    "ingredients": ["Charcoal", "Coconut oil", "Shea butter"],
+    "addInformation": {
+      "weight": "90g",
+      "dimension": "7x2x11 cm",
+      "direction": "Apply to wet skin, lather, and rinse thoroughly.",
+      "warnings": "Avoid contact with eyes. For external use only."
+    },
+    "images": ["https://example.com/images/soap3.jpg"],
+    "deletedAt": null,
+    "categoryId": { "$oid": "6862e96a614327fd9735796b" },
+    "inventoryId": { "$oid": "6862ee84cc1e01cc773ca20e" },
+    "discountId": null
+  },
+  {
+    "name": "Olive Oil & Lavender Gentle Cleansing Soap",
+    "sku": "SKU-2C017832",
+    "price": 10.19,
+    "descriptions": [
+      "A gentle handmade soap bar.",
+      "Perfect for daily use.",
+      "Infused with essential oils for aromatherapy."
+    ],
+    "advantages": ["Cruelty free", "Eco-friendly", "Chemical-free"],
+    "ingredients": ["Olive oil", "Goat milk", "Lavender essential oil"],
+    "addInformation": {
+      "weight": "132g",
+      "dimension": "10x4x9 cm",
+      "direction": "Apply to wet skin, lather, and rinse thoroughly.",
+      "warnings": "Avoid contact with eyes. For external use only."
+    },
+    "images": [
+      "https://example.com/images/soap1.jpg",
+      "https://example.com/images/soap2.jpg"
+    ],
+    "deletedAt": null,
+    "categoryId": { "$oid": "6862e96a614327fd9735796c" },
+    "inventoryId": { "$oid": "6862ee84cc1e01cc773ca20f" },
+    "discountId": null
+  },
+  {
+    "name": "Lavender & Charcoal Rejuvenating Soap",
+    "sku": "SKU-5F8A24F7",
+    "price": 6.12,
+    "descriptions": [
+      "Soothing and calming for sensitive skin.",
+      "Rich lather and natural fragrance.",
+      "Perfect for daily use."
+    ],
+    "advantages": ["Organic", "Long-lasting", "Eco-friendly"],
+    "ingredients": ["Charcoal", "Lavender essential oil", "Goat milk"],
+    "addInformation": {
+      "weight": "91g",
+      "dimension": "8x3x10 cm",
+      "direction": "Apply to wet skin, lather, and rinse thoroughly.",
+      "warnings": "Avoid contact with eyes. For external use only."
+    },
+    "images": ["https://example.com/images/soap3.jpg"],
+    "deletedAt": null,
+    "categoryId": { "$oid": "6862e96a614327fd97357979" },
+    "inventoryId": { "$oid": "6862ee84cc1e01cc773ca210" },
+    "discountId": null
+  },
+  {
+    "name": "Goat Milk & Lavender Comfort Soap",
+    "sku": "SKU-6723D09A",
+    "price": 9.65,
+    "descriptions": [
+      "Infused with essential oils for aromatherapy.",
+      "Perfect for daily use.",
+      "A gentle handmade soap bar."
+    ],
+    "advantages": ["Moisturizing", "Chemical-free", "Cruelty free"],
+    "ingredients": ["Goat milk", "Olive oil", "Lavender essential oil"],
+    "addInformation": {
+      "weight": "138g",
+      "dimension": "9x4x11 cm",
+      "direction": "Apply to wet skin, lather, and rinse thoroughly.",
+      "warnings": "Avoid contact with eyes. For external use only."
+    },
+    "images": [
+      "https://example.com/images/soap1.jpg",
+      "https://example.com/images/soap2.jpg"
+    ],
+    "deletedAt": null,
+    "categoryId": { "$oid": "6862e96a614327fd97357969" },
+    "inventoryId": { "$oid": "6862ee84cc1e01cc773ca211" },
+    "discountId": null
+  },
+  {
+    "name": "Charcoal & Shea Butter Rebalancing Soap",
+    "sku": "SKU-54C7AFC2",
+    "price": 8.03,
+    "descriptions": [
+      "Rich lather and natural fragrance.",
+      "Soothing and calming for sensitive skin.",
+      "Perfect for daily use."
+    ],
+    "advantages": ["Organic", "Long-lasting", "Eco-friendly"],
+    "ingredients": ["Charcoal", "Shea butter", "Goat milk"],
+    "addInformation": {
+      "weight": "97g",
+      "dimension": "6x3x9 cm",
+      "direction": "Apply to wet skin, lather, and rinse thoroughly.",
+      "warnings": "Avoid contact with eyes. For external use only."
+    },
+    "images": ["https://example.com/images/soap3.jpg"],
+    "deletedAt": null,
+    "categoryId": { "$oid": "6862e96a614327fd9735796b" },
+    "inventoryId": { "$oid": "6862ee84cc1e01cc773ca212" },
+    "discountId": null
+  },
+  {
+    "name": "Lavender & Goat Milk Harmony Soap",
+    "sku": "SKU-8E33BDAF",
+    "price": 13.21,
+    "descriptions": [
+      "A gentle handmade soap bar.",
+      "Infused with essential oils for aromatherapy.",
+      "Perfect for daily use."
+    ],
+    "advantages": ["Cruelty free", "Chemical-free", "Moisturizing"],
+    "ingredients": ["Lavender essential oil", "Goat milk", "Olive oil"],
+    "addInformation": {
+      "weight": "129g",
+      "dimension": "8x4x10 cm",
+      "direction": "Apply to wet skin, lather, and rinse thoroughly.",
+      "warnings": "Avoid contact with eyes. For external use only."
+    },
+    "images": [
+      "https://example.com/images/soap1.jpg",
+      "https://example.com/images/soap2.jpg"
+    ],
+    "deletedAt": null,
+    "categoryId": { "$oid": "6862e96a614327fd9735796a" },
+    "inventoryId": { "$oid": "6862ee84cc1e01cc773ca213" },
+    "discountId": null
+  }
+]

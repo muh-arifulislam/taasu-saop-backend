@@ -15,12 +15,13 @@ export interface IUser extends Document {
   mobile: string;
   gender: 'male' | 'female' | 'third';
   address: Types.ObjectId;
+  isDisabled?: boolean;
 }
 
 // User Address Interface
 export interface IUserAddress {
   addressLine1: string;
-  addressLine2?: string;
+  addressLine2?: string | null;
   city: string;
   postalCode: string;
 }

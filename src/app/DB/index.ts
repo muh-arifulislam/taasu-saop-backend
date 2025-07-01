@@ -1,5 +1,6 @@
 import { USER_ROLE } from '../modules/user/user.constant';
 import { User } from '../modules/user/user.model';
+import { generateHashedPassword } from '../utils/generateHashedPasswod';
 
 const superAdmin = {
   email: 'arifibnenam@gmail.com',
@@ -13,6 +14,11 @@ const superAdmin = {
 export const seedSuperAdmin = async () => {
   const isSuperAdminExists = await User.findOne({ role: USER_ROLE.superAdmin });
   if (!isSuperAdminExists) {
-    await User.create(superAdmin);
+    const hashedPassword = await generateHashedPassword(superAdmin.password);
+
+    await User.create({
+      ...superAdmin,
+      password: hashedPassword,
+    });
   }
 };

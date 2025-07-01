@@ -7,6 +7,14 @@ const addOneCategoryIntoDB = async (payload: IProductCategory) => {
   return result;
 };
 
+const addManyCategoriesIntoDB = async (categories: IProductCategory[]) => {
+  const result = await ProductCategory.insertMany(categories, {
+    ordered: false,
+  });
+
+  return result;
+};
+
 const getOneCategoryFromDB = async (id: string) => {
   const result = await ProductCategory.findById(id);
 
@@ -19,8 +27,23 @@ const getManyCategoryFromDB = async () => {
   return result;
 };
 
+const getGroupedCategoriesFrom = async () => {
+  const categories = await ProductCategory.find({ isActive: true });
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const grouped = categories.reduce((acc: any, cat) => {
+    if (!acc[cat.type]) acc[cat.type] = [];
+    acc[cat.type].push(cat);
+    return acc;
+  }, {});
+
+  return grouped;
+};
+
 export const ProductCategoryServices = {
   addOneCategoryIntoDB,
   getOneCategoryFromDB,
   getManyCategoryFromDB,
+  addManyCategoriesIntoDB,
+  getGroupedCategoriesFrom,
 };

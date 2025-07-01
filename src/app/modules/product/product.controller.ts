@@ -28,13 +28,16 @@ const getOneProduct = catchAsync(async (req, res) => {
 });
 
 const getManyProduct = catchAsync(async (req, res) => {
-  const result = await ProductServices.getManyProductFromDB();
+  const { meta, products } = await ProductServices.getManyProductFromDB(
+    req.query,
+  );
 
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
     message: 'Products data retrieved successful.',
-    data: result,
+    data: products,
+    meta,
   });
 });
 

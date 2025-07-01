@@ -7,6 +7,14 @@ const router = express.Router();
 
 router.get('/customer', UserControllers.getCustomerUsers);
 
+router.get('/customer/:id', UserControllers.getCustomerWithStats);
+
+router.get(
+  '/',
+  validateAuth(USER_ROLE.admin, USER_ROLE.superAdmin),
+  UserControllers.getAdminUsers,
+);
+
 router.get(
   '/me',
   validateAuth(
@@ -22,6 +30,18 @@ router.put(
   '/:id',
   validateAuth(USER_ROLE.customer, USER_ROLE.admin, USER_ROLE.superAdmin),
   UserControllers.updateUser,
+);
+
+router.post(
+  '/',
+  validateAuth(USER_ROLE.admin, USER_ROLE.superAdmin),
+  UserControllers.addUser,
+);
+
+router.delete(
+  '/:id',
+  validateAuth(USER_ROLE.admin, USER_ROLE.superAdmin),
+  UserControllers.deleteUser,
 );
 
 export const UserRoutes = router;

@@ -78,6 +78,10 @@ const userSchema = new Schema<IUser>(
       type: Schema.Types.ObjectId,
       ref: 'UserAddress',
     },
+    isDisabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     versionKey: false,

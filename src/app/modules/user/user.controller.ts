@@ -47,9 +47,47 @@ const getCustomerUsers = catchAsync(async (req, res) => {
   });
 });
 
+const getAdminUsers = catchAsync(async (req, res) => {
+  const { meta, data } = await UserServices.getAdminUsersFromDB(req.query);
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Admin users data fetch successfully',
+    data,
+    meta,
+  });
+});
+
+const deleteUser = catchAsync(async (req, res) => {
+  const { id } = req.params;
+
+  await UserServices.deleteUserFromDB(id);
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'User is deleted successfully',
+    data: null,
+  });
+});
+
+const getCustomerWithStats = catchAsync(async (req, res) => {
+  const { id } = req.params;
+
+  const result = await UserServices.getCustomerWithStatsFromDB(id);
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Customer with stats fetched successfully',
+    data: result,
+  });
+});
+
 export const UserControllers = {
   addUser,
   getUser,
   updateUser,
   getCustomerUsers,
+  getAdminUsers,
+  deleteUser,
+  getCustomerWithStats,
 };

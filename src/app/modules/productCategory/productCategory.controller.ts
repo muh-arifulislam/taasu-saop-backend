@@ -14,6 +14,19 @@ const createOneCategory = catchAsync(async (req, res) => {
   });
 });
 
+const createManyCategory = catchAsync(async (req, res) => {
+  const result = await ProductCategoryServices.addManyCategoriesIntoDB(
+    req.body,
+  );
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.CREATED,
+    message: 'Product categories created successful.',
+    data: result,
+  });
+});
+
 const getOneCategory = catchAsync(async (req, res) => {
   const { id } = req.params;
 
@@ -38,8 +51,21 @@ const getManyCategories = catchAsync(async (req, res) => {
   });
 });
 
+const getGroupedCategories = catchAsync(async (req, res) => {
+  const result = await ProductCategoryServices.getGroupedCategoriesFrom();
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Group categories data retrieved successful.',
+    data: result,
+  });
+});
+
 export const ProductCategoryControllers = {
   createOneCategory,
   getOneCategory,
   getManyCategories,
+  createManyCategory,
+  getGroupedCategories,
 };

@@ -11,9 +11,17 @@ import { createToken } from '../auth/auth.utils';
 import config from '../../config';
 import { generateHashedPassword } from '../../utils/generateHashedPasswod';
 import { startSession } from 'mongoose';
+import { Order } from '../order/order.model';
 
 const addUserIntoDB = async (payload: IUserPayload) => {
-  const { addressLine1, city, postalCode, password, ...userPayload } = payload;
+  const {
+    addressLine1,
+    addressLine2,
+    city,
+    postalCode,
+    password,
+    ...userPayload
+  } = payload;
 
   const session = await startSession();
 
@@ -29,6 +37,7 @@ const addUserIntoDB = async (payload: IUserPayload) => {
     //create User Address
     const addressPayload: IUserAddress = {
       addressLine1: addressLine1 ?? null,
+      addressLine2: addressLine2 ?? null,
       city: city ?? null,
       postalCode: postalCode ?? null,
     };
@@ -150,6 +159,7 @@ const updateUserIntoDB = async (
       firstName: payload.firstName,
       lastName: payload.lastName,
       mobile: payload.mobile,
+      isDisabled: payload.isDisabled,
     };
     const result = await User.findByIdAndUpdate(id, userPayload, {
       session,
@@ -249,9 +259,154 @@ const getCustomerUsersFromDB = async (query: TCustomersQueryParams) => {
   return { meta, data: result };
 };
 
+const deleteUserFromDB = async (id: string) => {
+  const session = await startSession();
+
+  try {
+    session.startTransaction();
+
+    const user = await User.findById(id);
+    if (!user) {
+      throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+    }
+
+    await UserAddress.findByIdAndDelete(user.address, { session });
+    await user.deleteOne({ session });
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    return null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
+    console.log(err);
+    await session.abortTransaction();
+    await session.endSession();
+    throw new AppError(httpStatus.BAD_REQUEST, err?.message);
+  }
+};
+
+const getAdminUsersFromDB = async (query: TCustomersQueryParams) => {
+  // Build aggregation pipeline
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const pipeline: any[] = [];
+
+  //match customers only
+  pipeline.push({
+    $match: {
+      role: { $in: ['moderator', 'admin', 'superAdmin'] },
+    },
+  });
+
+  // Add fullName field
+  pipeline.push({
+    $addFields: {
+      fullName: {
+        $concat: [
+          { $ifNull: ['$firstName', ''] },
+          ' ',
+          { $ifNull: ['$lastName', ''] },
+        ],
+      },
+    },
+  });
+
+  //searchTerm
+  if (query.searchTerm) {
+    const searchRegex = new RegExp(query.searchTerm, 'i');
+    pipeline.push({
+      $match: {
+        $or: [
+          { email: { $regex: searchRegex } },
+          { firstName: { $regex: searchRegex } },
+          { lastName: { $regex: searchRegex } },
+          { fullName: { $regex: searchRegex } },
+        ],
+      },
+    });
+  }
+
+  //sorting
+  if (query.sortBy && query.sortOrder) {
+    pipeline.push({
+      $sort: { [query.sortBy]: query.sortOrder === 'asc' ? 1 : -1 },
+    });
+  }
+
+  // Pagination
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 10;
+  const skip = (page - 1) * limit;
+  pipeline.push({ $skip: skip });
+  pipeline.push({ $limit: limit });
+
+  // Project only firstName, lastName, and fullName from user
+  pipeline.push({
+    $project: {
+      firstName: 1,
+      lastName: 1,
+      email: 1,
+      mobile: 1,
+      role: 1,
+      createdAt: 1,
+      fullName: 1,
+      isDisabled: 1,
+      // Ensure fullName is included in the projection
+    },
+  });
+
+  const result = await User.aggregate(pipeline);
+
+  const total = await User.countDocuments();
+
+  const meta = {
+    page,
+    limit,
+    total,
+    skip,
+  };
+  return { meta, data: result };
+};
+
+const getCustomerWithStatsFromDB = async (id: string) => {
+  const customer = await User.findById(id);
+  if (!customer) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Customer not found.');
+  }
+
+  const customerOrders = await Order.find({ user: customer._id }).populate({
+    path: 'payment',
+    select: '_id amount method status',
+    model: 'Payment',
+  });
+
+  const totalAmountSpent = customerOrders.reduce((sum, order) => {
+    const amount =
+      order.payment &&
+      typeof order.payment === 'object' &&
+      'amount' in order.payment
+        ? (order.payment as { amount: number }).amount
+        : 0;
+    return sum + amount;
+  }, 0);
+
+  const averageAmountSpent =
+    customerOrders.length > 0 ? totalAmountSpent / customerOrders.length : 0;
+
+  return {
+    customer,
+    orders: customerOrders,
+    totalAmountSpent,
+    averageAmountSpent,
+  };
+};
+
 export const UserServices = {
   addUserIntoDB,
   getUserFromDB,
   updateUserIntoDB,
   getCustomerUsersFromDB,
+  getAdminUsersFromDB,
+  deleteUserFromDB,
+  getCustomerWithStatsFromDB,
 };
