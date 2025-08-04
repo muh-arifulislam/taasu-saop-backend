@@ -8,6 +8,7 @@ import { ShippingAddressRoutes } from '../modules/shippingAddress/shippingAddres
 import { OrderRoutes } from '../modules/order/order.route';
 import { PaymentRoutes } from '../modules/payment/payment.route';
 import { BlogRoutes } from '../modules/blog/blog.route';
+import { ProductDiscountRoutes } from '../modules/productDiscount/productDiscount.route';
 
 const router = Router();
 
@@ -21,7 +22,7 @@ const moduleRoutes = [
     route: AuthRoutes,
   },
   {
-    path: '/category',
+    path: '/categories',
     route: ProductCategoryRoutes,
   },
   {
@@ -47,6 +48,10 @@ const moduleRoutes = [
   {
     path: '/blogs',
     route: BlogRoutes,
+  },
+  {
+    path: '/product-discounts',
+    route: ProductDiscountRoutes,
   },
 ];
 

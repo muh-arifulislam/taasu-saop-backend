@@ -243,4 +243,4 @@ For support and questions, please contact the development team or create an issu
 
 ---
 
-**Note**: This backend is designed to work with the TAAS SOAP frontend application. Make sure to configure the CORS settings appropriately for your frontend domain.
+**Note**: This backend is designed to work with the Taasu Soap frontend application. Make sure to configure the CORS settings appropriately for your frontend domain.

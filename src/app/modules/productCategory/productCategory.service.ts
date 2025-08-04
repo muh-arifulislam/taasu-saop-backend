@@ -1,4 +1,4 @@
-import { IProductCategory } from './productCategory.interface';
+import { FilterOptions, IProductCategory } from './productCategory.interface';
 import { ProductCategory } from './productCategory.model';
 
 const addOneCategoryIntoDB = async (payload: IProductCategory) => {
@@ -21,14 +21,39 @@ const getOneCategoryFromDB = async (id: string) => {
   return result;
 };
 
-const getManyCategoryFromDB = async () => {
-  const result = await ProductCategory.find();
+const getManyCategoryFromDB = async (query: FilterOptions) => {
+  const filter: Record<string, unknown> = {
+    deletedAt: null,
+  };
 
-  return result;
+  if (query.searchTerm?.trim()) {
+    const regex = new RegExp(query.searchTerm, 'i');
+    filter.$or = [{ name: regex }, { description: regex }];
+  }
+
+  // Filter by status
+  if (query.status === 'active') {
+    filter.isActive = true;
+  } else if (query.status === 'inactive') {
+    filter.isActive = false;
+  }
+
+  // Filter by category type
+  if (query.type && query.type !== 'all') {
+    filter.type = query.type;
+  }
+
+  // Fetch and return filtered data
+  return await ProductCategory.find(filter).sort({
+    createdAt: -1,
+  });
 };
 
 const getGroupedCategoriesFrom = async () => {
-  const categories = await ProductCategory.find({ isActive: true });
+  const categories = await ProductCategory.find({
+    isActive: true,
+    deletedAt: { $exists: false },
+  });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const grouped = categories.reduce((acc: any, cat) => {
@@ -40,10 +65,30 @@ const getGroupedCategoriesFrom = async () => {
   return grouped;
 };
 
+const updateOneIntoDB = async (
+  id: string,
+  payload: Partial<IProductCategory>,
+) => {
+  return await ProductCategory.findByIdAndUpdate(id, payload, {
+    new: true,
+    runValidators: true,
+  });
+};
+
+const softDeleteCategory = async (id: string) => {
+  return await ProductCategory.findByIdAndUpdate(
+    id,
+    { deletedAt: new Date() },
+    { new: true },
+  );
+};
+
 export const ProductCategoryServices = {
   addOneCategoryIntoDB,
   getOneCategoryFromDB,
   getManyCategoryFromDB,
   addManyCategoriesIntoDB,
   getGroupedCategoriesFrom,
+  updateOneIntoDB,
+  softDeleteCategory,
 };

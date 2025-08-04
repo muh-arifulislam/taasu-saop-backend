@@ -82,21 +82,93 @@ const getManyProductFromDB = async (query: Record<string, unknown>) => {
     }
   }
 
+  // Search
+  const searchTerm = query.searchTerm as string;
+
+  // Price Filtering
+  const priceFilter = query.priceRange as string;
+
+  // Stock Filtering
+  const stockStatus = query.stock as string; // "in-stock", "low-stock", "out-of-stock"
+
   // Sorting
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const sort: any = { createdAt: -1 };
+  const sortBy = query.sortBy as
+    | 'name-asc'
+    | 'name-desc'
+    | 'price-asc'
+    | 'price-desc'
+    | 'stock-asc'
+    | 'stock-desc';
+
+  const sort: Record<string, 1 | -1> = {};
+
+  switch (sortBy) {
+    case 'name-asc':
+      sort.name = 1;
+      break;
+    case 'name-desc':
+      sort.name = -1;
+      break;
+    case 'price-asc':
+      sort.price = 1;
+      break;
+    case 'price-desc':
+      sort.price = -1;
+      break;
+    case 'stock-asc':
+      sort['inventory.quantity'] = 1;
+      break;
+    case 'stock-desc':
+      sort['inventory.quantity'] = -1;
+      break;
+    default:
+      sort.createdAt = -1;
+  }
 
   // Pagination
   const page = Number(query.page) || 1;
   const limit = Number(query.limit) || 9;
   const skip = (page - 1) * limit;
 
+  // Build dynamic match stage
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const matchConditions: Record<string, any> = {};
+
+  // Category filter
+  if (categoryFilter.length > 0) {
+    matchConditions['category.name'] = { $in: categoryFilter };
+  }
+
+  // Search filter
+  if (searchTerm) {
+    matchConditions.name = { $regex: searchTerm, $options: 'i' };
+  }
+
+  // Price filter
+  if (priceFilter === '$0-$20') {
+    matchConditions.price = { $gte: 0, $lte: 20 };
+  } else if (priceFilter === '$21-$40') {
+    matchConditions.price = { $gte: 21, $lte: 40 };
+  } else if (priceFilter === '$40') {
+    matchConditions.price = { $gte: 41 };
+  }
+
+  // Stock filter
+  if (stockStatus === 'in-stock') {
+    matchConditions['inventory.quantity'] = { $gt: 0 };
+  } else if (stockStatus === 'low-stock') {
+    matchConditions['inventory.quantity'] = { $lte: 10, $gt: 0 };
+  } else if (stockStatus === 'out-of-stock') {
+    matchConditions['inventory.quantity'] = 0;
+  }
+
+  // Match stage
   const matchStage =
-    categoryFilter.length > 0
-      ? { $match: { 'category.name': { $in: categoryFilter } } }
+    Object.keys(matchConditions).length > 0
+      ? { $match: matchConditions }
       : null;
 
-  // Build aggregation pipeline up to match stage
+  // Aggregation pipeline
   const basePipeline = [
     {
       $lookup: {
@@ -106,12 +178,7 @@ const getManyProductFromDB = async (query: Record<string, unknown>) => {
         as: 'inventory',
       },
     },
-    {
-      $unwind: {
-        path: '$inventory',
-        preserveNullAndEmptyArrays: true,
-      },
-    },
+    { $unwind: { path: '$inventory', preserveNullAndEmptyArrays: true } },
     {
       $lookup: {
         from: 'productcategories',
@@ -120,22 +187,25 @@ const getManyProductFromDB = async (query: Record<string, unknown>) => {
         as: 'category',
       },
     },
+    { $unwind: { path: '$category', preserveNullAndEmptyArrays: true } },
     {
-      $unwind: {
-        path: '$category',
-        preserveNullAndEmptyArrays: true,
+      $lookup: {
+        from: 'productdiscounts',
+        localField: 'discountId',
+        foreignField: '_id',
+        as: 'discount',
       },
     },
-    // Only add $match if categoryFilter is not empty
+    { $unwind: { path: '$discount', preserveNullAndEmptyArrays: true } },
     ...(matchStage ? [matchStage] : []),
   ];
 
-  // Get total count before sorting/pagination
+  // Count before pagination
   const countPipeline = [...basePipeline, { $count: 'total' }];
   const countResult = await Product.aggregate(countPipeline);
   const total = countResult[0]?.total || 0;
 
-  // Add sorting and pagination for actual data
+  // Final data pipeline
   const pipeline = [
     ...basePipeline,
     { $sort: sort },
@@ -155,9 +225,6 @@ const getManyProductFromDB = async (query: Record<string, unknown>) => {
   };
 
   return { meta, products };
-
-  // const result = await Product.find().populate('categoryId inventoryId');
-  // return result;
 };
 
 export const ProductServices = {

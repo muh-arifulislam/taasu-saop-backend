@@ -41,7 +41,7 @@ const getOneCategory = catchAsync(async (req, res) => {
 });
 
 const getManyCategories = catchAsync(async (req, res) => {
-  const result = await ProductCategoryServices.getManyCategoryFromDB();
+  const result = await ProductCategoryServices.getManyCategoryFromDB(req.query);
 
   sendResponse(res, {
     success: true,
@@ -62,10 +62,37 @@ const getGroupedCategories = catchAsync(async (req, res) => {
   });
 });
 
+const updateOneCategory = catchAsync(async (req, res) => {
+  const result = await ProductCategoryServices.updateOneIntoDB(
+    req.params.id,
+    req.body,
+  );
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Product category updated successful.',
+    data: result,
+  });
+});
+
+const softDeleteCategory = catchAsync(async (req, res) => {
+  await ProductCategoryServices.softDeleteCategory(req.params.id);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Product category soft deleted successful.',
+    data: null,
+  });
+});
+
 export const ProductCategoryControllers = {
   createOneCategory,
   getOneCategory,
   getManyCategories,
   createManyCategory,
   getGroupedCategories,
+  updateOneCategory,
+  softDeleteCategory,
 };
