@@ -41,13 +41,16 @@ const getOneCategory = catchAsync(async (req, res) => {
 });
 
 const getManyCategories = catchAsync(async (req, res) => {
-  const result = await ProductCategoryServices.getManyCategoryFromDB(req.query);
+  const { data, meta } = await ProductCategoryServices.getManyCategoryFromDB(
+    req.query,
+  );
 
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
     message: 'Product categories data retrieved successful.',
-    data: result,
+    data,
+    meta,
   });
 });
 

@@ -1,5 +1,6 @@
 import ProductDiscount from './productDiscount.model';
 import { FilterOptions, IProductDiscount } from './productDiscount.interface';
+import { QueryBuilder } from '../../utils/QueryBuilder';
 
 const createDiscount = async (data: IProductDiscount) => {
   return await ProductDiscount.create(data);
@@ -7,12 +8,6 @@ const createDiscount = async (data: IProductDiscount) => {
 
 const getAllDiscounts = async (query: FilterOptions) => {
   const filter: Record<string, unknown> = { deletedAt: { $exists: false } };
-
-  if (query.searchTerm?.trim()) {
-    const regex = new RegExp(query.searchTerm, 'i');
-    filter.$or = [{ name: regex }, { description: regex }];
-  }
-
   // Filter by status
   if (query.status === 'active') {
     filter.isActive = true;
@@ -29,8 +24,21 @@ const getAllDiscounts = async (query: FilterOptions) => {
     filter.discountPercent = { $gt: 30 };
   }
 
-  // Fetch and return filtered data
-  return await ProductDiscount.find(filter).sort({ createdAt: -1 });
+  const queryBuilder = new QueryBuilder(
+    ProductDiscount.find(filter).lean(),
+    query,
+  )
+    .search(['name'])
+    .sort()
+    .paginate();
+
+  const data = await queryBuilder.build();
+  const meta = await queryBuilder.getMeta();
+
+  return {
+    data,
+    meta,
+  };
 };
 
 const getDiscountById = async (id: string) => {

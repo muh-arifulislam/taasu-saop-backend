@@ -28,13 +28,16 @@ const findOneInventory = catchAsync(async (req, res) => {
 });
 
 const findManyInventory = catchAsync(async (req, res) => {
-  const result = await ProductInventoryServices.getManyFromDB();
+  const { meta, data } = await ProductInventoryServices.getManyFromDB(
+    req.query,
+  );
 
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
     message: 'Inventories has been retrieved successfully.',
-    data: result,
+    data,
+    meta,
   });
 });
 

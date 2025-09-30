@@ -15,12 +15,15 @@ const create = catchAsync(async (req, res) => {
 });
 
 const getAll = catchAsync(async (req, res) => {
-  const result = await ProductDiscountServices.getAllDiscounts(req.query);
+  const { data, meta } = await ProductDiscountServices.getAllDiscounts(
+    req.query,
+  );
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
     message: 'Product discounts retrieved successfully',
-    data: result,
+    data: data,
+    meta,
   });
 });
 

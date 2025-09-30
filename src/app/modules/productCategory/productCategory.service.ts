@@ -1,4 +1,5 @@
-import { FilterOptions, IProductCategory } from './productCategory.interface';
+import { QueryBuilder } from '../../utils/QueryBuilder';
+import { IProductCategory } from './productCategory.interface';
 import { ProductCategory } from './productCategory.model';
 
 const addOneCategoryIntoDB = async (payload: IProductCategory) => {
@@ -21,32 +22,49 @@ const getOneCategoryFromDB = async (id: string) => {
   return result;
 };
 
-const getManyCategoryFromDB = async (query: FilterOptions) => {
-  const filter: Record<string, unknown> = {
-    deletedAt: null,
-  };
+const getManyCategoryFromDB = async (query) => {
+  const queryBuilder = new QueryBuilder(
+    ProductCategory.find({
+      deletedAt: { $eq: null },
+    }),
+    query,
+  )
+    .limitFields()
+    .search(['name'])
+    .filter()
+    .sort()
+    .paginate();
 
-  if (query.searchTerm?.trim()) {
-    const regex = new RegExp(query.searchTerm, 'i');
-    filter.$or = [{ name: regex }, { description: regex }];
-  }
+  const data = await queryBuilder.build();
+  const meta = await queryBuilder.getMeta();
 
-  // Filter by status
-  if (query.status === 'active') {
-    filter.isActive = true;
-  } else if (query.status === 'inactive') {
-    filter.isActive = false;
-  }
+  return { data, meta };
 
-  // Filter by category type
-  if (query.type && query.type !== 'all') {
-    filter.type = query.type;
-  }
+  // const filter: Record<string, unknown> = {
+  //   deletedAt: null,
+  // };
 
-  // Fetch and return filtered data
-  return await ProductCategory.find(filter).sort({
-    createdAt: -1,
-  });
+  // if (query.searchTerm?.trim()) {
+  //   const regex = new RegExp(query.searchTerm, 'i');
+  //   filter.$or = [{ name: regex }, { description: regex }];
+  // }
+
+  // // Filter by status
+  // if (query.status === 'active') {
+  //   filter.isActive = true;
+  // } else if (query.status === 'inactive') {
+  //   filter.isActive = false;
+  // }
+
+  // // Filter by category type
+  // if (query.type && query.type !== 'all') {
+  //   filter.type = query.type;
+  // }
+
+  // // Fetch and return filtered data
+  // return await ProductCategory.find(filter).sort({
+  //   createdAt: -1,
+  // });
 };
 
 const getGroupedCategoriesFrom = async () => {

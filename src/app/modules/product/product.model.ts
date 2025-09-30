@@ -50,4 +50,15 @@ const productSchema = new Schema<IProduct>({
   discountId: { type: Schema.Types.ObjectId, ref: 'ProductDiscount' },
 });
 
+productSchema.virtual('inventory', {
+  ref: 'ProductInventory',
+  localField: 'inventoryId',
+  foreignField: '_id',
+  justOne: true,
+});
+
+// Enable virtuals in toJSON
+productSchema.set('toJSON', { virtuals: true });
+productSchema.set('toObject', { virtuals: true });
+
 export const Product = model<IProduct>('Product', productSchema);

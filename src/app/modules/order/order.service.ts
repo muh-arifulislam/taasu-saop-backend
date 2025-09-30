@@ -276,7 +276,7 @@ const updateOrderIntoDB = async (id: string, payload: Partial<IOrder>) => {
       if (updatedOrder.orderStatus === 'Processing') {
         await Promise.all(
           updatedOrder.items.map(async (item) => {
-            await ProductInventoryServices.updateOneIntoDB(
+            await ProductInventoryServices.updateInventoryOnSale(
               item.product,
               item.quantity,
               { session },
