@@ -7,4 +7,13 @@ const addInvoiceIntoDB = async (payload: IInvoice) => {
   return result;
 };
 
-export const InvoiceServices = { addInvoiceIntoDB };
+const updateInvoiceIntoDB = async (id: string, payload: Partial<IInvoice>) => {
+  const result = await Invoice.findByIdAndUpdate(id, payload, {
+    new: true,
+    runValidators: true,
+  });
+
+  return result;
+};
+
+export const InvoiceServices = { addInvoiceIntoDB, updateInvoiceIntoDB };
