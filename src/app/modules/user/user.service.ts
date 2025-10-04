@@ -12,6 +12,7 @@ import config from '../../config';
 import { generateHashedPassword } from '../../utils/generateHashedPasswod';
 import { startSession } from 'mongoose';
 import { Order } from '../order/order.model';
+import { QueryBuilder } from '../../utils/QueryBuilder';
 
 const addUserIntoDB = async (payload: IUserPayload) => {
   const {
@@ -286,85 +287,14 @@ const deleteUserFromDB = async (id: string) => {
   }
 };
 
-const getAdminUsersFromDB = async (query: TCustomersQueryParams) => {
-  // Build aggregation pipeline
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const pipeline: any[] = [];
+const getAdminUsersFromDB = async (query: Record<string, unknown>) => {
+  const queryBuilder = new QueryBuilder(User.find().lean(), query)
+    .search(['firstName', 'lastName', 'email'])
+    .sort()
+    .paginate();
 
-  //match customers only
-  pipeline.push({
-    $match: {
-      role: { $in: ['moderator', 'admin', 'superAdmin'] },
-    },
-  });
-
-  // Add fullName field
-  pipeline.push({
-    $addFields: {
-      fullName: {
-        $concat: [
-          { $ifNull: ['$firstName', ''] },
-          ' ',
-          { $ifNull: ['$lastName', ''] },
-        ],
-      },
-    },
-  });
-
-  //searchTerm
-  if (query.searchTerm) {
-    const searchRegex = new RegExp(query.searchTerm, 'i');
-    pipeline.push({
-      $match: {
-        $or: [
-          { email: { $regex: searchRegex } },
-          { firstName: { $regex: searchRegex } },
-          { lastName: { $regex: searchRegex } },
-          { fullName: { $regex: searchRegex } },
-        ],
-      },
-    });
-  }
-
-  //sorting
-  if (query.sortBy && query.sortOrder) {
-    pipeline.push({
-      $sort: { [query.sortBy]: query.sortOrder === 'asc' ? 1 : -1 },
-    });
-  }
-
-  // Pagination
-  const page = Number(query.page) || 1;
-  const limit = Number(query.limit) || 10;
-  const skip = (page - 1) * limit;
-  pipeline.push({ $skip: skip });
-  pipeline.push({ $limit: limit });
-
-  // Project only firstName, lastName, and fullName from user
-  pipeline.push({
-    $project: {
-      firstName: 1,
-      lastName: 1,
-      email: 1,
-      mobile: 1,
-      role: 1,
-      createdAt: 1,
-      fullName: 1,
-      isDisabled: 1,
-      // Ensure fullName is included in the projection
-    },
-  });
-
-  const result = await User.aggregate(pipeline);
-
-  const total = await User.countDocuments();
-
-  const meta = {
-    page,
-    limit,
-    total,
-    skip,
-  };
+  const result = await queryBuilder.build();
+  const meta = await queryBuilder.getMeta();
   return { meta, data: result };
 };
 
