@@ -4,6 +4,7 @@ import { QueryBuilder } from '../../utils/QueryBuilder';
 import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
 import { IBlog } from './blog.interface';
+import { handleFeatured } from './blog.utils';
 
 const getAllFromDB = async (req: Request) => {
   const query = new QueryBuilder(
@@ -60,6 +61,10 @@ const deleteOneFromDB = async (id: string) => {
 };
 
 const updateOneIntoDB = async (id: string, payload: Partial<IBlog>) => {
+  if (payload.featured) {
+    await handleFeatured(id);
+  }
+
   const result = await Blog.findByIdAndUpdate(id, payload, {
     new: true,
     runValidators: true,
