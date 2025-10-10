@@ -3,7 +3,7 @@ import sendResponse from '../../utils/sendResponse';
 import { BlogServices } from './blog.service';
 
 const getBlogs = catchAsync(async (req, res) => {
-  const { data, meta } = await BlogServices.getBlogsFromServer(req);
+  const { data, meta } = await BlogServices.getAllFromDB(req);
 
   sendResponse(res, {
     success: true,
@@ -15,7 +15,7 @@ const getBlogs = catchAsync(async (req, res) => {
 });
 
 const getFeaturedBlogs = catchAsync(async (req, res) => {
-  const result = await BlogServices.getFeaturedBlogsFromServer();
+  const result = await BlogServices.getFeaturedFromDB();
 
   sendResponse(res, {
     success: true,
@@ -27,7 +27,7 @@ const getFeaturedBlogs = catchAsync(async (req, res) => {
 
 const getBlogById = catchAsync(async (req, res) => {
   const { id } = req.params;
-  const result = await BlogServices.getBlogFromDB(id);
+  const result = await BlogServices.getOneFromDB(id);
 
   sendResponse(res, {
     success: true,
