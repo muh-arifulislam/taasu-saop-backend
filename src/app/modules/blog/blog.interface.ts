@@ -1,4 +1,4 @@
-import { Types } from 'mongoose';
+import { Mixed, Types } from 'mongoose';
 
 export interface IBlog extends Document {
   title: string;
@@ -6,8 +6,9 @@ export interface IBlog extends Document {
   summary: string;
   category: string;
   featuredImage: string;
-  mainContent: string;
+  mainContent: Mixed;
   user: Types.ObjectId;
   comments: string[];
   tags: string[];
+  featured: boolean;
 }
