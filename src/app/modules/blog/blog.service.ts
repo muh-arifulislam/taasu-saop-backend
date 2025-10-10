@@ -1,12 +1,19 @@
 import { Request } from 'express';
 import { Blog } from './blog.model';
 import { QueryBuilder } from '../../utils/QueryBuilder';
+import AppError from '../../errors/AppError';
+import httpStatus from 'http-status';
+import { IBlog } from './blog.interface';
+import { handleFeatured } from './blog.utils';
 
-const getBlogsFromServer = async (req: Request) => {
-  const query = new QueryBuilder(Blog.find(), req.query).sort().paginate();
-
+const getAllFromDB = async (req: Request) => {
+  const query = new QueryBuilder(
+    Blog.find().populate('user', 'firstName lastName'),
+    req.query,
+  )
+    .sort()
+    .paginate();
   const data = await query.build();
-
   const meta = await query.getMeta();
 
   return {
@@ -15,7 +22,7 @@ const getBlogsFromServer = async (req: Request) => {
   };
 };
 
-const getFeaturedBlogsFromServer = async () => {
+const getFeaturedFromDB = async () => {
   const result = await Blog.find()
     .limit(2)
     .populate({
@@ -30,7 +37,7 @@ const getFeaturedBlogsFromServer = async () => {
   return result;
 };
 
-const getBlogFromDB = async (id: string) => {
+const getOneFromDB = async (id: string) => {
   const result = await Blog.findById(id).populate({
     path: 'user',
     select: {
@@ -43,8 +50,40 @@ const getBlogFromDB = async (id: string) => {
   return result;
 };
 
+const deleteOneFromDB = async (id: string) => {
+  const result = await Blog.findByIdAndDelete(id);
+
+  if (!result) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Blog not found!.');
+  }
+
+  return null;
+};
+
+const updateOneIntoDB = async (id: string, payload: Partial<IBlog>) => {
+  if (payload.featured) {
+    await handleFeatured(id);
+  }
+
+  const result = await Blog.findByIdAndUpdate(id, payload, {
+    new: true,
+    runValidators: true,
+  });
+
+  return result;
+};
+
+const createOneIntoDB = async (payload: IBlog) => {
+  const result = await Blog.create(payload);
+
+  return result;
+};
+
 export const BlogServices = {
-  getBlogsFromServer,
-  getFeaturedBlogsFromServer,
-  getBlogFromDB,
+  getAllFromDB,
+  getFeaturedFromDB,
+  getOneFromDB,
+  deleteOneFromDB,
+  updateOneIntoDB,
+  createOneIntoDB,
 };
