@@ -7,6 +7,7 @@ import express, { Application, Request, Response } from 'express';
 import router from './app/routes';
 import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import notFound from './app/middlewares/notFound';
+import { generalRateLimiter } from './app/utils/rateLimiter';
 
 const app: Application = express();
 
@@ -25,12 +26,16 @@ app.use(
   }),
 );
 
-app.get('/api/v1/test', async (req: Request, res: Response) => {
-  res.status(200).json({
-    message: 'test',
-    data: null,
-  });
-});
+app.get(
+  '/api/v1/test',
+  generalRateLimiter,
+  async (req: Request, res: Response) => {
+    res.status(200).json({
+      message: 'test',
+      data: null,
+    });
+  },
+);
 
 // application routes
 app.use('/api/v1', router);
