@@ -1,3 +1,5 @@
+import httpStatus from 'http-status';
+import AppError from '../../errors/AppError';
 import { QueryBuilder } from '../../utils/QueryBuilder';
 import { IProductCategory } from './productCategory.interface';
 import { ProductCategory } from './productCategory.model';
@@ -22,13 +24,8 @@ const getOneCategoryFromDB = async (id: string) => {
   return result;
 };
 
-const getManyCategoryFromDB = async (query) => {
-  const queryBuilder = new QueryBuilder(
-    ProductCategory.find({
-      deletedAt: { $eq: null },
-    }),
-    query,
-  )
+const getManyCategoryFromDB = async (query: Record<string, unknown>) => {
+  const queryBuilder = new QueryBuilder(ProductCategory.find(), query)
     .limitFields()
     .search(['name'])
     .filter()
@@ -39,32 +36,6 @@ const getManyCategoryFromDB = async (query) => {
   const meta = await queryBuilder.getMeta();
 
   return { data, meta };
-
-  // const filter: Record<string, unknown> = {
-  //   deletedAt: null,
-  // };
-
-  // if (query.searchTerm?.trim()) {
-  //   const regex = new RegExp(query.searchTerm, 'i');
-  //   filter.$or = [{ name: regex }, { description: regex }];
-  // }
-
-  // // Filter by status
-  // if (query.status === 'active') {
-  //   filter.isActive = true;
-  // } else if (query.status === 'inactive') {
-  //   filter.isActive = false;
-  // }
-
-  // // Filter by category type
-  // if (query.type && query.type !== 'all') {
-  //   filter.type = query.type;
-  // }
-
-  // // Fetch and return filtered data
-  // return await ProductCategory.find(filter).sort({
-  //   createdAt: -1,
-  // });
 };
 
 const getGroupedCategoriesFrom = async () => {
@@ -93,12 +64,19 @@ const updateOneIntoDB = async (
   });
 };
 
-const softDeleteCategory = async (id: string) => {
-  return await ProductCategory.findByIdAndUpdate(
-    id,
-    { deletedAt: new Date() },
-    { new: true },
-  );
+const deleteCategory = async (id: string) => {
+  const category = await ProductCategory.findById(id);
+  if (!category) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Category not found!!!');
+  }
+  if (category.slug === 'unknown') {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'This category can not be delete!!!',
+    );
+  }
+
+  return await ProductCategory.deleteOne({ _id: id });
 };
 
 export const ProductCategoryServices = {
@@ -108,5 +86,5 @@ export const ProductCategoryServices = {
   addManyCategoriesIntoDB,
   getGroupedCategoriesFrom,
   updateOneIntoDB,
-  softDeleteCategory,
+  deleteCategory,
 };

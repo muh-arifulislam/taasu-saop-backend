@@ -26,11 +26,11 @@ const moduleRoutes = [
     route: ProductCategoryRoutes,
   },
   {
-    path: '/inventory',
+    path: '/inventories',
     route: ProductInventoryRoutes,
   },
   {
-    path: '/product',
+    path: '/products',
     route: ProductRoutes,
   },
   {

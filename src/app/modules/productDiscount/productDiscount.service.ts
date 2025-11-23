@@ -7,15 +7,8 @@ const createDiscount = async (data: IProductDiscount) => {
 };
 
 const getAllDiscounts = async (query: FilterOptions) => {
+  // Filter by discount range - this additional method which is not in builder
   const filter: Record<string, unknown> = { deletedAt: { $exists: false } };
-  // Filter by status
-  if (query.status === 'active') {
-    filter.isActive = true;
-  } else if (query.status === 'inactive') {
-    filter.isActive = false;
-  }
-
-  // Filter by discount range
   if (query.discountRange === 'low') {
     filter.discountPercent = { $lte: 10 };
   } else if (query.discountRange === 'medium') {
@@ -24,21 +17,17 @@ const getAllDiscounts = async (query: FilterOptions) => {
     filter.discountPercent = { $gt: 30 };
   }
 
-  const queryBuilder = new QueryBuilder(
-    ProductDiscount.find(filter).lean(),
-    query,
-  )
+  const queryBuilder = new QueryBuilder(ProductDiscount.find(filter), query)
+    .limitFields()
     .search(['name'])
+    .filter()
     .sort()
     .paginate();
 
   const data = await queryBuilder.build();
   const meta = await queryBuilder.getMeta();
 
-  return {
-    data,
-    meta,
-  };
+  return { data, meta };
 };
 
 const getDiscountById = async (id: string) => {

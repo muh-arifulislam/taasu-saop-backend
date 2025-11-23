@@ -86,7 +86,15 @@ const userSchema = new Schema<IUser>(
   {
     versionKey: false,
     timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   },
 );
+
+userSchema.virtual('fullName').get(function () {
+  const first = this.firstName ?? 'N/A';
+  const last = this.lastName ?? '';
+  return `${first} ${last}`.trim();
+});
 
 export const User = model<IUser>('User', userSchema);
