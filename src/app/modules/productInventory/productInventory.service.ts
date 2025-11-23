@@ -21,9 +21,17 @@ const getOneFromDB = async (id: string) => {
 };
 
 const getManyFromDB = async (query: Record<string, unknown>) => {
-  // const result = await ProductInventory.find();
-
-  const builder = new QueryBuilder(ProductInventory.find(), query)
+  const builder = new QueryBuilder(
+    ProductInventory.find()
+      .populate({
+        path: 'products',
+        select: 'name sku -_id',
+        justOne: true,
+      })
+      .lean(),
+    query,
+  )
+    .search(['name', 'sku'])
     .paginate()
     .limitFields()
     .sort();

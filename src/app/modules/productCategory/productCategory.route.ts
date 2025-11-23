@@ -24,6 +24,6 @@ router.get('/:id', ProductCategoryControllers.getOneCategory);
 
 router.put('/:id', ProductCategoryControllers.updateOneCategory);
 
-router.delete('/:id', ProductCategoryControllers.softDeleteCategory);
+router.delete('/:id', ProductCategoryControllers.deleteCategory);
 
 export const ProductCategoryRoutes = router;

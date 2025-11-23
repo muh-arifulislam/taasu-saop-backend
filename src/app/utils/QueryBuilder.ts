@@ -29,7 +29,15 @@ export class QueryBuilder<T> {
   // 1. Filtering
   filter() {
     const queryObj = { ...this.queryParams };
-    const excludedFields = ['page', 'sort', 'limit', 'fields', 'search'];
+    const excludedFields = [
+      'page',
+      'sort',
+      'limit',
+      'fields',
+      'search',
+      'discountRange',
+    ];
+
     excludedFields.forEach((el) => delete queryObj[el]);
 
     // Convert operators like price[gte]=10 into { price: { $gte: 10 } }

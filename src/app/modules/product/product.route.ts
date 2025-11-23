@@ -7,6 +7,8 @@ const router = Router();
 
 router.get('/:id', ProductControllers.getOneProduct);
 
+router.delete('/:id', ProductControllers.deleteOneById);
+
 router.post(
   '/',
   validateRequest(ProductValidations.createSchema),

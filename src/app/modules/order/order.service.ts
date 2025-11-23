@@ -377,6 +377,13 @@ const getOrdersFromDB = async (query: TOrdersQueryParams) => {
     user: {
       firstName: '$user.firstName',
       lastName: '$user.lastName',
+      fullName: {
+        $concat: [
+          { $ifNull: ['$user.firstName', 'N/A'] },
+          ' ',
+          { $ifNull: ['$user.lastName', ''] },
+        ],
+      },
       _id: '$user._id',
     },
     payment: {
