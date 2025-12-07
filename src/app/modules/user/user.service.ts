@@ -93,6 +93,21 @@ const getUserFromDB = async (email: string) => {
       },
     },
     {
+      $addFields: {
+        fullName: {
+          $trim: {
+            input: {
+              $concat: [
+                { $ifNull: ['$firstName', 'N/A'] },
+                ' ',
+                { $ifNull: ['$lastName', ''] },
+              ],
+            },
+          },
+        },
+      },
+    },
+    {
       $lookup: {
         from: 'useraddresses', // Ensure this matches the actual collection name
         localField: 'address', // Field in the User collection
@@ -111,6 +126,7 @@ const getUserFromDB = async (email: string) => {
         _id: 1,
         firstName: 1,
         lastName: 1,
+        fullName: 1,
         mobile: 1,
         email: 1,
         role: 1,
@@ -288,7 +304,7 @@ const deleteUserFromDB = async (id: string) => {
 };
 
 const getAdminUsersFromDB = async (query: Record<string, unknown>) => {
-  const queryBuilder = new QueryBuilder(User.find().lean(), query)
+  const queryBuilder = new QueryBuilder(User.find(), query)
     .search(['firstName', 'lastName', 'email'])
     .sort()
     .paginate();
@@ -304,30 +320,81 @@ const getCustomerWithStatsFromDB = async (id: string) => {
     throw new AppError(httpStatus.NOT_FOUND, 'Customer not found.');
   }
 
-  const customerOrders = await Order.find({ user: customer._id }).populate({
-    path: 'payment',
-    select: '_id amount method status',
-    model: 'Payment',
-  });
+  const ordersAgg = await Order.aggregate([
+    {
+      $match: { user: customer._id },
+    },
+    {
+      $lookup: {
+        from: 'payments',
+        localField: 'payment_id',
+        foreignField: '_id',
+        as: 'payment',
+      },
+    },
+    {
+      $unwind: {
+        path: '$payment',
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        orderId: 1,
+        user: 1,
+        shippingAddress: 1,
+        items: 1,
+        totalAmount: 1,
+        orderStatus: 1,
+        payment: {
+          _id: '$payment._id',
+          amount: '$payment.amount',
+          method: '$payment.method',
+          status: '$payment.status',
+        },
+        createdAt: 1,
+      },
+    },
+    {
+      $facet: {
+        orders: [{ $sort: { createdAt: -1 } }],
+        summary: [
+          {
+            $group: {
+              _id: null,
+              totalAmountSpent: { $sum: '$payment.amount' },
+              orderCount: { $sum: 1 },
+            },
+          },
+          {
+            $addFields: {
+              averageAmountSpent: {
+                $cond: [
+                  { $eq: ['$orderCount', 0] },
+                  0,
+                  { $divide: ['$totalAmountSpent', '$orderCount'] },
+                ],
+              },
+            },
+          },
+          { $project: { _id: 0 } },
+        ],
+      },
+    },
+  ]);
 
-  const totalAmountSpent = customerOrders.reduce((sum, order) => {
-    const amount =
-      order.payment &&
-      typeof order.payment === 'object' &&
-      'amount' in order.payment
-        ? (order.payment as { amount: number }).amount
-        : 0;
-    return sum + amount;
-  }, 0);
-
-  const averageAmountSpent =
-    customerOrders.length > 0 ? totalAmountSpent / customerOrders.length : 0;
+  const orders = ordersAgg[0].orders;
+  const summary = ordersAgg[0].summary[0] || {
+    totalAmountSpent: 0,
+    averageAmountSpent: 0,
+  };
 
   return {
     customer,
-    orders: customerOrders,
-    totalAmountSpent,
-    averageAmountSpent,
+    orders,
+    totalAmountSpent: summary.totalAmountSpent,
+    averageAmountSpent: summary.averageAmountSpent,
   };
 };
 

@@ -8,7 +8,7 @@ const addPaymentIntoDB = async (payload: IPayment) => {
 };
 
 const getPaymentsFromDB = async () => {
-  const result = await Payment.find();
+  const result = await Payment.find().populate('order');
 
   return result;
 };

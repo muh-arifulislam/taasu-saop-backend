@@ -20,6 +20,7 @@ app.use(
       'http://localhost:5173',
       'https://taasu-soap.web.app',
       'http://localhost:5174',
+      'http://localhost:5175',
       'https://admin-taasu-soap.netlify.app',
     ],
     credentials: true,
@@ -36,6 +37,10 @@ app.get(
     });
   },
 );
+
+app.get('/api/v1/ping', (req, res) => {
+  res.json({ message: 'pong' });
+});
 
 // application routes
 app.use('/api/v1', router);
