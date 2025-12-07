@@ -1,6 +1,6 @@
 import { Order } from './order.model';
 
-const PAD_LENGTH = 5; // Length of the sequential number padding
+const PAD_LENGTH = 4; // Length of the sequential number padding
 
 export async function generateOrderId(): Promise<string> {
   try {
@@ -12,10 +12,10 @@ export async function generateOrderId(): Promise<string> {
     let lastOrderId = 0;
 
     if (lastOrder) {
-      lastOrderId = parseInt(lastOrder.orderId);
+      lastOrderId = parseInt(lastOrder.orderId.split('-')[1]);
     }
 
-    const newOrderId = `${String(lastOrderId + 1).padStart(PAD_LENGTH, '0')}`;
+    const newOrderId = `ORD-${String(lastOrderId + 1).padStart(PAD_LENGTH, '0')}`;
     return newOrderId;
   } catch (err) {
     throw new Error('Failed to generate orderId');

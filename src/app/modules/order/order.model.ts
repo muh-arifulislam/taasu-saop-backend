@@ -69,7 +69,7 @@ const orderSchema = new Schema<IOrder>(
       min: 0,
       required: true,
     },
-    payment: {
+    payment_id: {
       type: Schema.Types.ObjectId,
       ref: 'Payment',
     },

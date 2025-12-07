@@ -21,7 +21,8 @@ export interface IOrder {
   items: TOrderItem[];
   totalAmount: number;
   shippingAddress: Types.ObjectId;
-  payment: Types.ObjectId;
+
+  payment_id: Types.ObjectId;
   orderStatus?: TOrderStatus;
   statusHistory?: TStatusHistory[];
 
@@ -33,7 +34,7 @@ export interface IOrderPayload extends IOrder {
   items: TOrderItem[];
   totalAmount: number;
   shippingAddress: Types.ObjectId;
-  payment: Types.ObjectId;
+  payment_id: Types.ObjectId;
   orderStatus: TOrderStatus;
   statusHistory: TStatusHistory[];
 }
