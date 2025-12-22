@@ -6,4 +6,5 @@ export interface IPayment {
   status: (typeof PaymentStatus)[number];
   amount: number;
   invoice?: Types.ObjectId;
+  paymentId: string;
 }

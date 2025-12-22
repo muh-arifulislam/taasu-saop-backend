@@ -7,6 +7,7 @@ import express, { Application, Request, Response } from 'express';
 import router from './app/routes';
 import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import notFound from './app/middlewares/notFound';
+import { generalRateLimiter } from './app/utils/rateLimiter';
 
 const app: Application = express();
 
@@ -19,17 +20,26 @@ app.use(
       'http://localhost:5173',
       'https://taasu-soap.web.app',
       'http://localhost:5174',
+      'http://localhost:5175',
       'https://admin-taasu-soap.netlify.app',
     ],
     credentials: true,
   }),
 );
 
-app.get('/api/v1/test', async (req: Request, res: Response) => {
-  res.status(200).json({
-    message: 'test',
-    data: null,
-  });
+app.get(
+  '/api/v1/test',
+  generalRateLimiter,
+  async (req: Request, res: Response) => {
+    res.status(200).json({
+      message: 'test',
+      data: null,
+    });
+  },
+);
+
+app.get('/api/v1/ping', (req, res) => {
+  res.json({ message: 'pong' });
 });
 
 // application routes

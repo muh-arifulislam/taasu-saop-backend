@@ -9,6 +9,7 @@ import { OrderRoutes } from '../modules/order/order.route';
 import { PaymentRoutes } from '../modules/payment/payment.route';
 import { BlogRoutes } from '../modules/blog/blog.route';
 import { ProductDiscountRoutes } from '../modules/productDiscount/productDiscount.route';
+import { StatsRoutes } from '../modules/stats/stats.route';
 
 const router = Router();
 
@@ -26,11 +27,11 @@ const moduleRoutes = [
     route: ProductCategoryRoutes,
   },
   {
-    path: '/inventory',
+    path: '/inventories',
     route: ProductInventoryRoutes,
   },
   {
-    path: '/product',
+    path: '/products',
     route: ProductRoutes,
   },
   {
@@ -52,6 +53,10 @@ const moduleRoutes = [
   {
     path: '/product-discounts',
     route: ProductDiscountRoutes,
+  },
+  {
+    path: '/stats',
+    route: StatsRoutes,
   },
 ];
 

@@ -1,11 +1,10 @@
 import { startSession } from 'mongoose';
-import { ProductCategory } from '../productCategory/productCategory.model';
 import ProductInventory from '../productInventory/productInventory.model';
 import { IProductPayload } from './product.interface';
 import { Product } from './product.model';
 import AppError from '../../errors/AppError';
-import { IProductCategory } from '../productCategory/productCategory.interface';
 import { ProductQueryBuilder } from '../../utils/QueryBuilder';
+import httpStatus from 'http-status';
 
 const addOneProductIntoDB = async (payload: IProductPayload) => {
   const session = await startSession();
@@ -17,6 +16,7 @@ const addOneProductIntoDB = async (payload: IProductPayload) => {
       [
         {
           quantity: payload.stock,
+          sold: payload.sold,
         },
       ],
       {
@@ -24,29 +24,14 @@ const addOneProductIntoDB = async (payload: IProductPayload) => {
       },
     );
 
-    let category: IProductCategory;
-
-    const checkCategoryOnDB = await ProductCategory.findOne({
-      name: payload.category,
-    });
-
-    if (!checkCategoryOnDB) {
-      const result = await ProductCategory.create(
-        [
-          {
-            name: payload.category,
-          },
-        ],
-        { session },
-      );
-
-      category = result[0];
-    } else {
-      category = checkCategoryOnDB;
-    }
-
     const product = await Product.create(
-      [{ ...payload, inventoryId: inventory[0]._id, categoryId: category._id }],
+      [
+        {
+          ...payload,
+          inventoryId: inventory[0]._id,
+          categoryId: payload.categoryId,
+        },
+      ],
       { session },
     );
 
@@ -56,6 +41,32 @@ const addOneProductIntoDB = async (payload: IProductPayload) => {
       product,
       inventory,
     };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw new AppError(400, err?.message);
+  }
+};
+
+const deleteOneFromDB = async (id: string) => {
+  const product = await Product.findById(id);
+  if (!product) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Product not found!');
+  }
+
+  const session = await startSession();
+
+  try {
+    session.startTransaction();
+
+    await ProductInventory.findByIdAndDelete(product.inventoryId, { session });
+    await Product.deleteOne({ _id: id }, { session });
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    return null;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     await session.abortTransaction();
@@ -95,4 +106,5 @@ export const ProductServices = {
   addOneProductIntoDB,
   getOneProductFromDB,
   getManyProductFromDB,
+  deleteOneFromDB,
 };

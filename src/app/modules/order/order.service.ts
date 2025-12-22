@@ -19,6 +19,7 @@ import Stripe from 'stripe';
 import config from '../../config';
 import { generateOrderId } from './order.utils';
 import { ProductInventoryServices } from '../productInventory/productInventory.service';
+import { generatePaymentId } from '../payment/payment.utils';
 
 const addOrderIntoDB = async (payload: IOrderPayload) => {
   const user = await User.findById(payload.user);
@@ -39,11 +40,13 @@ const addOrderIntoDB = async (payload: IOrderPayload) => {
     session.startTransaction();
 
     const orderId = await generateOrderId();
+    const paymentId = await generatePaymentId();
 
     const paymentPayload: IPayment = {
       method: PAYMENT_METHOD.COD,
       status: PAYMENT_STATUS.pending,
       amount: payload.totalAmount,
+      paymentId: paymentId,
     };
 
     const payment = await Payment.create([paymentPayload], {
@@ -55,7 +58,7 @@ const addOrderIntoDB = async (payload: IOrderPayload) => {
       user: user._id,
       shippingAddress: shippingAddress._id,
       totalAmount: payload.totalAmount,
-      payment: payment[0]._id,
+      payment_id: payment[0]._id,
       items: payload.items,
     };
 
@@ -201,31 +204,92 @@ const geUserOrdersFromDB = async (id: string, req: Request) => {
 };
 
 const getOrderFromDB = async (id: string) => {
-  const result = await Order.findOne({
-    orderId: id,
-  })
-    .populate('shippingAddress')
-    .populate([
-      {
-        path: 'items.product',
-        select: 'images name _id',
-      },
-      {
-        path: 'payment',
-      },
-      {
-        path: 'user',
-        populate: {
-          path: 'address',
+  const aggregate = Order.aggregate([]);
+
+  aggregate.match({ orderId: id });
+
+  // Lookup shippingAddress
+  aggregate
+    .lookup({
+      from: 'shippingaddresses', // collection name in MongoDB
+      localField: 'shippingAddress',
+      foreignField: '_id',
+      as: 'shippingAddress',
+    })
+    .unwind({ path: '$shippingAddress', preserveNullAndEmptyArrays: true });
+
+  // Lookup payment data
+  aggregate
+    .lookup({
+      from: 'payments',
+      localField: 'payment_id',
+      foreignField: '_id',
+      as: 'payment',
+    })
+    .unwind({ path: '$payment', preserveNullAndEmptyArrays: true });
+
+  // Lookup user data
+  aggregate
+    .lookup({
+      from: 'users',
+      localField: 'user',
+      foreignField: '_id',
+      as: 'user',
+    })
+    .unwind({ path: '$user', preserveNullAndEmptyArrays: true });
+
+  // Lookup products for items
+  aggregate.lookup({
+    from: 'products',
+    let: { productIds: '$items.product' },
+    pipeline: [
+      { $match: { $expr: { $in: ['$_id', '$$productIds'] } } },
+      { $project: { _id: 1, name: 1, image: 1, price: 1 } }, // select only necessary fields
+    ],
+    as: 'products',
+  });
+
+  // Map products into items array as a nested `product` object
+  aggregate.addFields({
+    items: {
+      $map: {
+        input: '$items',
+        as: 'item',
+        in: {
+          quantity: '$$item.quantity',
+          price: '$$item.price',
+          product: {
+            $arrayElemAt: [
+              {
+                $filter: {
+                  input: '$products',
+                  as: 'p',
+                  cond: { $eq: ['$$p._id', '$$item.product'] },
+                },
+              },
+              0,
+            ],
+          },
         },
       },
-    ]);
+    },
+  });
 
-  if (!result) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Order not found');
-  }
+  aggregate.project({
+    orderId: 1,
+    totalAmount: 1,
 
-  return result;
+    user: 1,
+    payment: 1,
+    shippingAddress: 1,
+    orderStatus: 1,
+    statusHistory: 1,
+    items: 1,
+  });
+
+  const result = await aggregate;
+
+  return result[0];
 };
 
 const updateOrderIntoDB = async (id: string, payload: Partial<IOrder>) => {
@@ -353,7 +417,7 @@ const getOrdersFromDB = async (query: TOrdersQueryParams) => {
   aggregate
     .lookup({
       from: 'payments',
-      localField: 'payment',
+      localField: 'payment_id',
       foreignField: '_id',
       as: 'payment',
     })
@@ -377,6 +441,13 @@ const getOrdersFromDB = async (query: TOrdersQueryParams) => {
     user: {
       firstName: '$user.firstName',
       lastName: '$user.lastName',
+      fullName: {
+        $concat: [
+          { $ifNull: ['$user.firstName', 'N/A'] },
+          ' ',
+          { $ifNull: ['$user.lastName', ''] },
+        ],
+      },
       _id: '$user._id',
     },
     payment: {

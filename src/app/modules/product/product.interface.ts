@@ -35,6 +35,7 @@ export interface IProductPayload {
     warnings?: string;
   };
 
-  category: string;
+  categoryId: string;
   stock: number;
+  sold: number;
 }

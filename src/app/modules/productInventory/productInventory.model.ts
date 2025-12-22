@@ -15,6 +15,17 @@ const productInventorySchema = new Schema<IProductInventory>(
   },
 );
 
+productInventorySchema.virtual('products', {
+  ref: 'Product',
+  localField: '_id',
+  foreignField: 'inventoryId',
+  justOne: true,
+});
+
+productInventorySchema.set('toJSON', { virtuals: true });
+
+productInventorySchema.set('toObject', { virtuals: true });
+
 const ProductInventory = model<IProductInventory>(
   'ProductInventory',
   productInventorySchema,

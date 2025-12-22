@@ -58,7 +58,7 @@ const createSchema = z.object({
         })
         .optional(),
     }),
-    category: z.string({
+    categoryId: z.string({
       required_error: 'CategoryId is required.',
       invalid_type_error: 'CategoryId must be a valid string.',
     }),
@@ -73,6 +73,7 @@ const createSchema = z.object({
         invalid_type_error: 'DiscountId must be a valid ObjectId as a string.',
       })
       .regex(/^[0-9a-fA-F]{24}$/, 'DiscountId must be a valid ObjectId.')
+      .nullable()
       .optional(),
   }),
 });

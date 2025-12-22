@@ -79,8 +79,8 @@ const updateOneCategory = catchAsync(async (req, res) => {
   });
 });
 
-const softDeleteCategory = catchAsync(async (req, res) => {
-  await ProductCategoryServices.softDeleteCategory(req.params.id);
+const deleteCategory = catchAsync(async (req, res) => {
+  await ProductCategoryServices.deleteCategory(req.params.id);
 
   sendResponse(res, {
     success: true,
@@ -97,5 +97,5 @@ export const ProductCategoryControllers = {
   createManyCategory,
   getGroupedCategories,
   updateOneCategory,
-  softDeleteCategory,
+  deleteCategory,
 };
