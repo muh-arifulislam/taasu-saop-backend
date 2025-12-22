@@ -1,18 +1,15 @@
 import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
-import {
-  IUser,
-  IUserAddress,
-  IUserPayload,
-  TCustomersQueryParams,
-} from './user.interface';
-import { User, UserAddress } from './user.model';
+import { IUser, IUserPayload, TCustomersQueryParams } from './user.interface';
+import { User } from './user.model';
 import { createToken } from '../auth/auth.utils';
 import config from '../../config';
 import { generateHashedPassword } from '../../utils/generateHashedPasswod';
 import { startSession } from 'mongoose';
 import { Order } from '../order/order.model';
 import { QueryBuilder } from '../../utils/QueryBuilder';
+import { UserAddress } from '../userAddress/userAddress.model';
+import { IUserAddress } from '../userAddress/userAddress.interface';
 
 const addUserIntoDB = async (payload: IUserPayload) => {
   const {
@@ -36,7 +33,7 @@ const addUserIntoDB = async (payload: IUserPayload) => {
     }
 
     //create User Address
-    const addressPayload: IUserAddress = {
+    const addressPayload = {
       addressLine1: addressLine1 ?? null,
       addressLine2: addressLine2 ?? null,
       city: city ?? null,
@@ -304,7 +301,10 @@ const deleteUserFromDB = async (id: string) => {
 };
 
 const getAdminUsersFromDB = async (query: Record<string, unknown>) => {
-  const queryBuilder = new QueryBuilder(User.find(), query)
+  const queryBuilder = new QueryBuilder(
+    User.find({ role: { $ne: 'customer' } }),
+    query,
+  )
     .search(['firstName', 'lastName', 'email'])
     .sort()
     .paginate();

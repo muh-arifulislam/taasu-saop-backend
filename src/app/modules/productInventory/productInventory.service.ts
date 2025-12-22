@@ -106,7 +106,7 @@ const updateInventoryStock = async (
 
     inventory.quantity += payload.change;
     await inventory.save({ session });
-    await StockHistory.create(payload, { session });
+    await StockHistory.create([payload], { session });
   } catch (err) {
     await session.abortTransaction();
     await session.endSession();

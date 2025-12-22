@@ -16,6 +16,7 @@ export async function generateOrderId(): Promise<string> {
     }
 
     const newOrderId = `ORD-${String(lastOrderId + 1).padStart(PAD_LENGTH, '0')}`;
+
     return newOrderId;
   } catch (err) {
     throw new Error('Failed to generate orderId');

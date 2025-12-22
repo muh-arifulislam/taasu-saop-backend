@@ -7,7 +7,7 @@ export async function generatePaymentId(): Promise<string> {
     // Find the last order to get the latest orderId
     const lastPayment = await Payment.findOne()
       .sort({ createdAt: -1 })
-      .select('orderId')
+      .select('paymentId')
       .lean();
     let lastPaymentId = 0;
 
@@ -18,6 +18,6 @@ export async function generatePaymentId(): Promise<string> {
     const newPaymentId = `PAY-${String(lastPaymentId + 1).padStart(PAD_LENGTH, '0')}`;
     return newPaymentId;
   } catch (err) {
-    throw new Error('Failed to generate orderId');
+    throw new Error('Failed to generate paymentId');
   }
 }

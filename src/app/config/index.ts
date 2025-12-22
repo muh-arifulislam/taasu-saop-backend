@@ -16,4 +16,5 @@ export default {
   cloudinary_api_key: process.env.CLOUDINARY_API_KEY,
   cloudinary_api_secret: process.env.CLOUDINARY_API_SECRET,
   stripe_secret: process.env.STRIPE_SECRET,
+  rabbitmq: process.env.RABBITMQ_URL,
 };

@@ -1,33 +1,29 @@
-import { Document, Types } from 'mongoose';
+import { Types } from 'mongoose';
+import { IUserAddress } from '../userAddress/userAddress.interface';
 
+// Role & Account Type
 export type TUserRole = 'admin' | 'customer' | 'superAdmin' | 'moderator';
-
 export type TAccountType = 'email' | 'google';
 
-export interface IUser extends Document {
-  firstName?: string;
-  lastName?: string;
+// Main User Interface
+export interface IUser {
+  firstName?: string | null;
+  lastName?: string | null;
   email: string;
-  password?: string;
+  password?: string | null;
   role: TUserRole;
   accountType: TAccountType;
-  googleId?: string;
-  mobile: string;
-  gender: 'male' | 'female' | 'third';
-  address: Types.ObjectId;
+  googleId?: string | null;
+  mobile?: string | null;
+  gender?: 'male' | 'female' | 'third' | null;
   isDisabled?: boolean;
+  address?: Types.ObjectId;
 }
 
-// User Address Interface
-export interface IUserAddress {
-  addressLine1: string;
-  addressLine2?: string | null;
-  city: string;
-  postalCode: string;
-}
+// Payload type that can merge user + address (optional)
+export interface IUserPayload extends Partial<IUser>, Partial<IUserAddress> {}
 
-export interface IUserPayload extends IUser, IUserAddress {}
-
+// Query Params
 export type TCustomersQueryParams = {
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';

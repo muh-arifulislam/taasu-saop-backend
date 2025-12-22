@@ -49,12 +49,10 @@ const blogSchema = new Schema<IBlog>(
 );
 
 // Middleware to ensure only MAX_FEATURED blogs are marked as featured
-blogSchema.pre('save', async function (next) {
+blogSchema.pre('save', async function () {
   if (this.featured && this.isModified('featured')) {
     await handleFeatured(this._id);
   }
-
-  next();
 });
 
 export const Blog = model<IBlog>('Blog', blogSchema);

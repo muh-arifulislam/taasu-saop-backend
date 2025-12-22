@@ -17,27 +17,18 @@ export type TStatusHistory = {
 
 export interface IOrder {
   orderId: string;
-  user: Types.ObjectId;
+  user: Types.ObjectId | string;
   items: TOrderItem[];
   totalAmount: number;
-  shippingAddress: Types.ObjectId;
 
   payment_id: Types.ObjectId;
   orderStatus?: TOrderStatus;
   statusHistory?: TStatusHistory[];
-
+  shippingAddress: Types.ObjectId | string;
   isDeleted?: boolean;
 }
 
-export interface IOrderPayload extends IOrder {
-  user: Types.ObjectId;
-  items: TOrderItem[];
-  totalAmount: number;
-  shippingAddress: Types.ObjectId;
-  payment_id: Types.ObjectId;
-  orderStatus: TOrderStatus;
-  statusHistory: TStatusHistory[];
-}
+export interface IOrderPayload extends IOrder {}
 
 export type TOrdersQueryParams = {
   orderStatus?: TOrderStatus;

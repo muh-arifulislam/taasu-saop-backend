@@ -20,6 +20,8 @@ import config from '../../config';
 import { generateOrderId } from './order.utils';
 import { ProductInventoryServices } from '../productInventory/productInventory.service';
 import { generatePaymentId } from '../payment/payment.utils';
+import { publishOrderNotification } from '../../rabbitmq/notification.publisher';
+import { randomUUID } from 'crypto';
 
 const addOrderIntoDB = async (payload: IOrderPayload) => {
   const user = await User.findById(payload.user);
@@ -53,7 +55,7 @@ const addOrderIntoDB = async (payload: IOrderPayload) => {
       session,
     });
 
-    const orderPayload: IOrder = {
+    const orderPayload: IOrderPayload = {
       orderId,
       user: user._id,
       shippingAddress: shippingAddress._id,
@@ -63,6 +65,17 @@ const addOrderIntoDB = async (payload: IOrderPayload) => {
     };
 
     const order = await Order.create([orderPayload], { session });
+
+    publishOrderNotification({
+      type: 'order.created',
+      eventId: randomUUID(), // Unique ID
+      payload: {
+        orderId: order[0].orderId,
+        message: 'A new order has been placed!',
+        adminId: 'admin-123',
+        createdAt: new Date(),
+      },
+    });
 
     await session.commitTransaction();
     await session.endSession();
@@ -98,6 +111,7 @@ const addOrderIntoDBViaStripe = async (payload: IOrderPayload) => {
 
   try {
     const orderId = await generateOrderId();
+    const paymentId = await generatePaymentId();
 
     session.startTransaction();
 
@@ -125,6 +139,7 @@ const addOrderIntoDBViaStripe = async (payload: IOrderPayload) => {
       method: PAYMENT_METHOD.Stripe,
       status: PAYMENT_STATUS.paid,
       amount: payload.totalAmount,
+      paymentId: paymentId,
     };
 
     const payment = await Payment.create([paymentPayload], {
@@ -145,28 +160,18 @@ const addOrderIntoDBViaStripe = async (payload: IOrderPayload) => {
       },
     ];
 
-    const orderPayload: IOrder = {
+    const orderPayload: IOrderPayload = {
       orderId,
       user: user._id,
       shippingAddress: shippingAddress._id,
       totalAmount: payload.totalAmount,
-      payment: payment[0]._id,
+      payment_id: payment[0]._id,
       items: payload.items,
       orderStatus: ORDER_STATUS.processing,
       statusHistory,
     };
 
     const order = await Order.create([orderPayload], { session });
-
-    await Promise.all(
-      payload.items.map(async (item) => {
-        await ProductInventoryServices.updateOneIntoDB(
-          item.product,
-          item.quantity,
-          { session },
-        );
-      }),
-    );
 
     await session.commitTransaction();
     await session.endSession();

@@ -1,4 +1,4 @@
-import { Schema } from 'mongoose';
+import { Types } from 'mongoose';
 
 export interface IProduct {
   name: string;
@@ -16,9 +16,9 @@ export interface IProduct {
   images: string[];
   deletedAt: Date;
 
-  categoryId: Schema.Types.ObjectId;
-  inventoryId: Schema.Types.ObjectId;
-  discountId?: Schema.Types.ObjectId;
+  categoryId: Types.ObjectId;
+  inventoryId: Types.ObjectId;
+  discountId?: Types.ObjectId;
 }
 
 export interface IProductPayload {
